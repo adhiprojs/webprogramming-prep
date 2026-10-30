@@ -1,0 +1,17 @@
+{
+  "name": "w1-cod2",
+  "week": "w1",
+  "kind": "cod",
+  "number": 2,
+  "type": "puppeteer",
+  "title": "StreamFlix Landing Page",
+  "starterKind": "buggy",
+  "editable": [
+    "public/index.html",
+    "public/style.css"
+  ],
+  "test": "puppeteer/test.js",
+  "testCount": 6,
+  "starterPasses": 0,
+  "runTotal": 6
+}

@@ -1,0 +1,17 @@
+{
+  "name": "w2-cy1",
+  "week": "w2",
+  "kind": "cy",
+  "number": 1,
+  "type": "puppeteer",
+  "title": "Tech Innovators 2025 Event Page",
+  "starterKind": "template",
+  "editable": [
+    "public/index.html",
+    "public/style.css"
+  ],
+  "test": "puppeteer/test.js",
+  "testCount": 10,
+  "starterPasses": 0,
+  "runTotal": 10
+}

@@ -1,0 +1,17 @@
+{
+  "name": "w3-cod2",
+  "week": "w3",
+  "kind": "cod",
+  "number": 2,
+  "type": "puppeteer",
+  "title": "SkillUp Login Form Styling",
+  "starterKind": "buggy",
+  "editable": [
+    "public/index.html",
+    "public/styles.css"
+  ],
+  "test": "puppeteer/test.js",
+  "testCount": 5,
+  "starterPasses": 0,
+  "runTotal": 5
+}

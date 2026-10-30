@@ -1,0 +1,17 @@
+{
+  "name": "w8-cod1",
+  "week": "w8",
+  "kind": "cod",
+  "number": 1,
+  "type": "react",
+  "title": "Employee Directory Search (React)",
+  "starterKind": "template",
+  "editable": [
+    "reactapp/src/App.js",
+    "reactapp/src/App.css"
+  ],
+  "test": "react/tests/App.test.js",
+  "testCount": 7,
+  "starterPasses": 0,
+  "runTotal": 1
+}

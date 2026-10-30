@@ -1,0 +1,65 @@
+/* write you stylings here */
+body {
+    margin: 0;
+    padding: 30px 0;
+    font-family: Arial, sans-serif;
+    background: #fff;
+    text-align: center;
+  }
+  
+  .showcase {
+    width: 100%;
+  }
+  
+  .buttons {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin-bottom: 20px;
+  }
+  
+  .buttons button {
+    font-size: 12px;
+    padding: 5px 12px;
+  }
+  
+  .image-container {
+    position: relative;
+    width: 300px;
+    height: 400px;
+    margin: 0 auto;
+  }
+  
+  .layered-img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 300px;
+    height: 400px;
+    object-fit: cover;
+    border: 1px solid #ddd;
+  }
+  
+  #img1 {
+    z-index: 1;
+  }
+  
+  #img2 {
+    z-index: 2;
+  }
+  
+  #img3 {
+    z-index: 3;
+  }
+  
+  @media (max-width: 600px) {
+    .image-container {
+      width: 250px;
+      height: 333px;
+    }
+  
+    .layered-img {
+      width: 250px;
+      height: 333px;
+    }
+  }

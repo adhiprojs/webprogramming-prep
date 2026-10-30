@@ -1,0 +1,19 @@
+{
+  "name": "w10-cy1",
+  "week": "w10",
+  "kind": "cy",
+  "number": 1,
+  "type": "react",
+  "title": "Crop Search (React)",
+  "starterKind": "blank",
+  "editable": [
+    "reactapp/src/App.js",
+    "reactapp/src/Components/CropDashboard.jsx",
+    "reactapp/src/Components/CropList.jsx",
+    "reactapp/src/App.css"
+  ],
+  "test": "react/tests/App.test.js",
+  "testCount": 7,
+  "starterPasses": 0,
+  "runTotal": 7
+}

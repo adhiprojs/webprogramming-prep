@@ -1,0 +1,17 @@
+{
+  "name": "w3-pah2",
+  "week": "w3",
+  "kind": "pah",
+  "number": 2,
+  "type": "puppeteer",
+  "title": "Restaurant Menu Page Structure",
+  "starterKind": "template",
+  "editable": [
+    "public/index.html",
+    "public/style.css"
+  ],
+  "test": "puppeteer/test.js",
+  "testCount": 10,
+  "starterPasses": 0,
+  "runTotal": 10
+}

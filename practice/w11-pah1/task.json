@@ -1,0 +1,19 @@
+{
+  "name": "w11-pah1",
+  "week": "w11",
+  "kind": "pah",
+  "number": 1,
+  "type": "react",
+  "title": "Employee Directory with PropTypes (React)",
+  "starterKind": "blank",
+  "editable": [
+    "reactapp/src/App.js",
+    "reactapp/src/components/EmployeeCard.jsx",
+    "reactapp/src/App.css",
+    "reactapp/src/components/EmployeeCard.css"
+  ],
+  "test": "react/tests/App.test.js",
+  "testCount": 8,
+  "starterPasses": 0,
+  "runTotal": 8
+}

@@ -1,0 +1,18 @@
+{
+  "name": "w6-pah1",
+  "week": "w6",
+  "kind": "pah",
+  "number": 1,
+  "type": "puppeteer",
+  "title": "Image Z-Index Switcher",
+  "starterKind": "template",
+  "editable": [
+    "public/index.html",
+    "public/script.js",
+    "public/style.css"
+  ],
+  "test": "puppeteer/test.js",
+  "testCount": 8,
+  "starterPasses": 0,
+  "runTotal": 9
+}

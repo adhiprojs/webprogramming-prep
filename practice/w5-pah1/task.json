@@ -1,0 +1,17 @@
+{
+  "name": "w5-pah1",
+  "week": "w5",
+  "kind": "pah",
+  "number": 1,
+  "type": "puppeteer",
+  "title": "Testimonials Section",
+  "starterKind": "blank",
+  "editable": [
+    "public/index.html",
+    "public/styles.css"
+  ],
+  "test": "puppeteer/test.js",
+  "testCount": 10,
+  "starterPasses": 0,
+  "runTotal": 10
+}

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Student Attendance Tracker</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <h1>Student Attendance Tracker</h1>
+
+  <!-- Hidden selector required for test initialisation -->
+  <select id="sectionSelect" class="d-none">
+    <option value="A">A</option>
+    <option value="B">B</option>
+    <option value="C">C</option>
+  </select>
+
+  <fieldset id="sectionFieldset">
+    <legend>Select Class Section</legend>
+    <div class="section-options">
+      <label><input type="radio" name="section" value="A"> Section A</label>
+      <label><input type="radio" name="section" value="B"> Section B</label>
+      <label><input type="radio" name="section" value="C"> Section C</label>
+    </div>
+    <p>Selected Section: <strong id="sectionDisplay">None</strong></p>
+  </fieldset>
+
+  <fieldset id="attendanceFieldset">
+    <legend>Mark Attendance</legend>
+    <div class="student-grid">
+      <label><input type="checkbox" id="student1" class="student-checkbox" value="Aarav Kumar"> Aarav Kumar</label>
+      <label><input type="checkbox" id="student2" class="student-checkbox" value="Bhavya Sharma"> Bhavya Sharma</label>
+      <label><input type="checkbox" id="student3" class="student-checkbox" value="Chinmay Patel"> Chinmay Patel</label>
+      <label><input type="checkbox" id="student4" class="student-checkbox" value="Divya Nair"> Divya Nair</label>
+      <label><input type="checkbox" id="student5" class="student-checkbox" value="Eshan Mehta"> Eshan Mehta</label>
+      <label><input type="checkbox" id="student6" class="student-checkbox" value="Farida Begum"> Farida Begum</label>
+    </div>
+  </fieldset>
+
+  <div class="actions">
+    <button id="submitBtn">Calculate Attendance</button>
+  </div>
+
+  <fieldset id="summaryFieldset">
+    <legend>Attendance Summary</legend>
+    <div class="summary-grid">
+      <div class="summary-card present">
+        <p>Present</p>
+        <div id="presentCount">0</div>
+      </div>
+      <div class="summary-card absent">
+        <p>Absent</p>
+        <div id="absentCount">0</div>
+      </div>
+      <div class="summary-card percent">
+        <p>Attendance %</p>
+        <div id="attendancePercent">0%</div>
+      </div>
+    </div>
+  </fieldset>
+
+  <script src="script.js"></script>
+</body>
+</html>

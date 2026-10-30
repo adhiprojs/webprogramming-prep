@@ -1,0 +1,471 @@
+=================== ./reactapp/package.json ===================
+{
+  "name": "reactapp",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
+    "axios": "^1.6.3",
+    "history": "^5.3.0",
+    "jest": "^27.5.1",
+    "canvas": "^2.11.2",
+    "msw": "^1.2.4",
+    "node-fetch": "^3.3.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.15.0",
+    "react-scripts": "5.0.1",
+    "supertest": "^6.3.3",
+    "web-vitals": "^2.1.4"
+  },
+  "scripts": {
+    "start": "BROWSER=none PORT=8081 react-scripts start --disable-host-check --host 0.0.0.0",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "jest-fetch-mock": "^3.0.3"
+  }
+}
+=================== ./reactapp/public/index.html ===================
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta
+      name="description"
+      content="Web site created using create-react-app"
+    />
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <!--
+      manifest.json provides metadata used when your web app is installed on a
+      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
+    -->
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <!--
+      Notice the use of %PUBLIC_URL% in the tags above.
+      It will be replaced with the URL of the `public` folder during the build.
+      Only files inside the `public` folder can be referenced from the HTML.
+
+      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
+      work correctly both with client-side routing and a non-root public URL.
+      Learn how to configure a non-root public URL by running `npm run build`.
+    -->
+    <title>React App</title>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+    <!--
+      This HTML file is a template.
+      If you open it directly in the browser, you will see an empty page.
+
+      You can add webfonts, meta tags, or analytics to this file.
+      The build step will place the bundled scripts into the <body> tag.
+
+      To begin the development, run `npm start` or `yarn start`.
+      To create a production bundle, use `npm run build` or `yarn build`.
+    -->
+  </body>
+</html>
+
+=================== ./reactapp/public/manifest.json ===================
+{
+  "short_name": "React App",
+  "name": "Create React App Sample",
+  "icons": [
+    {
+      "src": "favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "logo192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "logo512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff"
+}
+
+=================== ./reactapp/src/App.css ===================
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+=================== ./reactapp/src/App.js ===================
+import logo from './logo.svg';
+import './App.css';
+
+function App() {
+  return (
+    <div className="App">
+      <header className="App-header">
+        <img src={logo} className="App-logo" alt="logo" />
+        <p>
+          Edit <code>src/App.js</code> and save to reload.
+        </p>
+        <a
+          className="App-link"
+          href="https://reactjs.org"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Learn React
+        </a>
+      </header>
+    </div>
+  );
+}
+
+export default App;
+
+=================== ./reactapp/src/components/Stopwatch.jsx ===================
+import React, { Component } from 'react';
+
+class Stopwatch extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      time: 0,
+      isRunning: false,
+      laps: []
+    };
+    this.interval = null;
+    this.startTime = 0;
+  }
+
+  componentDidMount() {
+    this.interval = null;
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (!prevState.isRunning && this.state.isRunning) {
+      this.startTime = Date.now() - this.state.time;
+      this.interval = setInterval(() => {
+        this.setState({
+          time: Date.now() - this.startTime
+        });
+      }, 10);
+    }
+
+    if (prevState.isRunning && !this.state.isRunning && this.interval) {
+      clearInterval(this.interval);
+      this.interval = null;
+    }
+  }
+
+  componentWillUnmount() {
+    if (this.interval) {
+      clearInterval(this.interval);
+    }
+  }
+
+  formatTime = (milliseconds) => {
+    const minutes = Math.floor(milliseconds / 60000);
+    const seconds = Math.floor((milliseconds % 60000) / 1000);
+    const centiseconds = Math.floor((milliseconds % 1000) / 10);
+
+    return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}.${String(centiseconds).padStart(2, '0')}`;
+  };
+
+  handleStart = () => {
+    this.setState({
+      isRunning: true
+    });
+  };
+
+  handleStop = () => {
+    this.setState((prevState) => ({
+      isRunning: false,
+      laps: [...prevState.laps, prevState.time]
+    }));
+  };
+
+  handleReset = () => {
+    this.setState({
+      time: 0,
+      isRunning: false,
+      laps: []
+    });
+  };
+
+  handleLap = () => {
+    this.setState((prevState) => ({
+      laps: [...prevState.laps, prevState.time]
+    }));
+  };
+
+  render() {
+    const { time, isRunning, laps } = this.state;
+
+    return (
+      <div className="stopwatch">
+        <h2>Stopwatch</h2>
+
+        <div className="time">
+          {this.formatTime(time)}
+        </div>
+
+        <div className="buttons">
+          <button
+            className="start"
+            onClick={this.handleStart}
+            disabled={isRunning}
+          >
+            Start
+          </button>
+
+          <button
+            className="stop"
+            onClick={this.handleStop}
+            disabled={!isRunning}
+          >
+            Stop
+          </button>
+
+          <button
+            className="reset"
+            onClick={this.handleReset}
+            disabled={isRunning}
+          >
+            Reset
+          </button>
+        </div>
+
+        <button
+          className="lap"
+          onClick={this.handleLap}
+          disabled={!isRunning}
+        >
+          Add Lap
+        </button>
+
+        <div className="laps">
+          {laps.map((lap, index) => (
+            <div className="lap-item" key={index}>
+              {this.formatTime(lap)}
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+}
+
+export default Stopwatch;
+=================== ./reactapp/src/index.css ===================
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+=================== ./reactapp/src/index.js ===================
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import './index.css';
+import App from './App';
+import reportWebVitals from './reportWebVitals';
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
+
+// If you want to start measuring performance in your app, pass a function
+// to log results (for example: reportWebVitals(console.log))
+// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
+reportWebVitals();
+
+=================== ./reactapp/src/reportWebVitals.js ===================
+const reportWebVitals = onPerfEntry => {
+  if (onPerfEntry && onPerfEntry instanceof Function) {
+    import('web-vitals').then(({ getCLS, getFID, getFCP, getLCP, getTTFB }) => {
+      getCLS(onPerfEntry);
+      getFID(onPerfEntry);
+      getFCP(onPerfEntry);
+      getLCP(onPerfEntry);
+      getTTFB(onPerfEntry);
+    });
+  }
+};
+
+export default reportWebVitals;
+
+=================== ./reactapp/src/setupTests.js ===================
+// jest-dom adds custom jest matchers for asserting on DOM nodes.
+// allows you to do things like:
+// expect(element).toHaveTextContent(/react/i)
+// learn more: https://github.com/testing-library/jest-dom
+import '@testing-library/jest-dom';
+
+=================== ./react/tests/App.test.js ===================
+import React from 'react';
+import { render, fireEvent, getByAltText, getAllByText } from '@testing-library/react';
+import Stopwatch from '../components/Stopwatch';
+
+describe('Stopwatch Component', () => {
+  it('renders_Stopwatch_without_crashing', () => {
+    const {getByText} = render(<Stopwatch />);
+    const stopwatch = getByText('Stopwatch');
+    expect(stopwatch).toBeInTheDocument();
+  });
+
+  it('starts_the_stopwatch_when_Start_button_is_clicked', () => {
+    const { getByText } = render(<Stopwatch />);
+    const startButton = getByText('Start');
+    fireEvent.click(startButton);
+    expect(startButton).toBeDisabled(); 
+  });
+
+  it('stops_the_stopwatch_when_Stop_button_is_clicked', () => {
+    const { getByText } = render(<Stopwatch />);
+    const startButton = getByText('Start');
+    fireEvent.click(startButton);
+    const stopButton = getByText('Stop');
+    fireEvent.click(stopButton);
+    expect(stopButton).toBeDisabled(); 
+  });
+
+  it('adds_a_lap_when_Add_Lap_button_is_clicked', () => {
+    const { getByText, container } = render(<Stopwatch />);
+    const startButton = getByText('Start');
+    fireEvent.click(startButton);
+  
+    const addLapButton = getByText('Add Lap');
+    fireEvent.click(addLapButton);
+    
+  });
+
+
+  it('resets_the_stopwatch_when_Reset_button_is_clicked', () => {
+    const { getByText } = render(<Stopwatch />);
+    const startButton = getByText('Start');
+    fireEvent.click(startButton);
+
+    const resetButton = getByText('Reset');
+    fireEvent.click(resetButton);
+    const timeDisplay = getByText('00:00.00');
+    expect(timeDisplay).toBeInTheDocument();
+  });
+
+  it('formats_time_correctly', () => {
+    const { getByText } = render(<Stopwatch />);
+    const formattedTime = getByText('00:00.00');
+    expect(formattedTime).toBeInTheDocument();
+  });
+
+  it('toggles_the_is_Running_state_when_start_and_stop_buttons_are_clicked', () => {
+    const { getByText } = render(<Stopwatch />);
+    const startButton = getByText('Start');
+    fireEvent.click(startButton);
+    const stopButton = getByText('Stop');
+    fireEvent.click(stopButton);
+    expect(startButton).not.toBeDisabled();
+  });
+
+  it('disables_Add_Lap_button_when_stopwatch_is_not_running', () => {
+    const { getByText } = render(<Stopwatch />);
+    const addLapButton = getByText('Add Lap');
+    expect(addLapButton).toBeDisabled();
+  });
+
+  it('disables_Stop_button_when_stopwatch_is_not_running', () => {
+    const { getByText } = render(<Stopwatch />);
+    const stopButton = getByText('Stop');
+    expect(stopButton).toBeDisabled();
+  });
+
+  
+  
+  it('disables_Add_Lap_button_after_stopping_the_stopwatch', () => {
+    const { getByText } = render(<Stopwatch />);
+    const startButton = getByText('Start');
+    fireEvent.click(startButton);
+  
+    const stopButton = getByText('Stop');
+    fireEvent.click(stopButton);
+  
+    const addLapButton = getByText('Add Lap');
+    expect(addLapButton).toBeDisabled();
+  });
+  
+});

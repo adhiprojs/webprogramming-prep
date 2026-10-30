@@ -1,0 +1,17 @@
+{
+  "name": "w1-pah2",
+  "week": "w1",
+  "kind": "pah",
+  "number": 2,
+  "type": "puppeteer",
+  "title": "Tech Conference 2025",
+  "starterKind": "template",
+  "editable": [
+    "public/index.html",
+    "public/style.css"
+  ],
+  "test": "puppeteer/test.js",
+  "testCount": 10,
+  "starterPasses": 0,
+  "runTotal": 10
+}

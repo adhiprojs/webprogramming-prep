@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Shopping Bill Calculator</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <h1>Shopping Bill Calculator</h1>
+
+  <fieldset id="itemsFieldset">
+    <legend>Select Items</legend>
+    <div class="items-grid">
+      <label><input type="checkbox" id="item1" class="item-checkbox" data-name="Rice" data-price="120"> Rice — Rs.120</label>
+      <label><input type="checkbox" id="item2" class="item-checkbox" data-name="Oil" data-price="95"> Oil — Rs.95</label>
+      <label><input type="checkbox" id="item3" class="item-checkbox" data-name="Sugar" data-price="50"> Sugar — Rs.50</label>
+      <label><input type="checkbox" id="item4" class="item-checkbox" data-name="Milk" data-price="60"> Milk — Rs.60</label>
+      <label><input type="checkbox" id="item5" class="item-checkbox" data-name="Bread" data-price="40"> Bread — Rs.40</label>
+      <label><input type="checkbox" id="item6" class="item-checkbox" data-name="Butter" data-price="75"> Butter — Rs.75</label>
+    </div>
+  </fieldset>
+
+  <fieldset id="paymentFieldset">
+    <legend>Select Payment Method</legend>
+    <div class="payment-options">
+      <label><input type="radio" name="paymentMethod" value="cash"> Cash (No Discount)</label>
+      <label><input type="radio" name="paymentMethod" value="card"> Card (5% Discount)</label>
+      <label><input type="radio" name="paymentMethod" value="upi"> UPI (10% Discount)</label>
+    </div>
+    <p>Selected Payment: <strong id="paymentDisplay">None</strong></p>
+  </fieldset>
+
+  <div class="actions">
+    <button id="calculateBtn">Calculate Bill</button>
+    <button id="resetBillBtn">Reset</button>
+  </div>
+
+  <fieldset id="summaryFieldset">
+    <legend>Bill Summary</legend>
+    <div class="summary-grid">
+      <div class="summary-card">
+        <p>Total Amount (Rs.)</p>
+        <div id="totalAmount">0</div>
+      </div>
+      <div class="summary-card">
+        <p>Discount (Rs.)</p>
+        <div id="discountAmount">0</div>
+      </div>
+      <div class="summary-card">
+        <p>Final Amount (Rs.)</p>
+        <div id="finalAmount">0</div>
+      </div>
+    </div>
+    <p><strong>Selected Items:</strong></p>
+    <ul id="itemSummaryList">
+      <li id="noItemsMsg">None</li>
+    </ul>
+  </fieldset>
+
+  <script src="script.js"></script>
+</body>
+</html>

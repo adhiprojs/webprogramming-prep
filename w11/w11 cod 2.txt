@@ -1,0 +1,366 @@
+=================== ./appdb/admin/system.version.metadata.json ===================
+{"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_"}],"uuid":"e0b0bc773cca409aa12a3c92fbd8d6bb","collectionName":"system.version","type":"collection"}
+=================== ./appdb/prelude.json ===================
+{"ServerVersion":"6.0.29","ToolVersion":"100.17.0"}
+=================== ./reactapp/package.json ===================
+{
+  "name": "reactapp",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
+    "canvas": "^2.11.2",
+    "history": "^5.3.0",
+    "msw": "^1.2.4",
+    "node-fetch": "^3.3.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.15.0",
+    "react-scripts": "5.0.1",
+    "supertest": "^6.3.3",
+    "web-vitals": "^2.1.4"
+  },
+  "devDependencies": {
+    "jest-fetch-mock": "^3.0.3"
+  },
+  "scripts": {
+    "start": "BROWSER=none PORT=8081 react-scripts start --disable-host-check --host 0.0.0.0",
+    "build": "react-scripts build",
+    "test": "react-scripts test --watchAll=false",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
+=================== ./reactapp/public/index.html ===================
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta
+      name="description"
+      content="Web site created using create-react-app"
+    />
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <!--
+      manifest.json provides metadata used when your web app is installed on a
+      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
+    -->
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <!--
+      Notice the use of %PUBLIC_URL% in the tags above.
+      It will be replaced with the URL of the `public` folder during the build.
+      Only files inside the `public` folder can be referenced from the HTML.
+
+      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
+      work correctly both with client-side routing and a non-root public URL.
+      Learn how to configure a non-root public URL by running `npm run build`.
+    -->
+    <title>React App</title>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+    <!--
+      This HTML file is a template.
+      If you open it directly in the browser, you will see an empty page.
+
+      You can add webfonts, meta tags, or analytics to this file.
+      The build step will place the bundled scripts into the <body> tag.
+
+      To begin the development, run `npm start` or `yarn start`.
+      To create a production bundle, use `npm run build` or `yarn build`.
+    -->
+  </body>
+</html>
+
+=================== ./reactapp/public/manifest.json ===================
+{
+  "short_name": "React App",
+  "name": "Create React App Sample",
+  "icons": [
+    {
+      "src": "favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "logo192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "logo512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff"
+}
+
+=================== ./reactapp/src/App.css ===================
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f0f4f8;
+}
+=================== ./reactapp/src/App.js ===================
+import React from "react";
+import PriceTag from "./components/PriceTag";
+
+function App() {
+  return (
+    <div>
+      <PriceTag
+        productName="Wireless Headphones"
+        originalPrice={2000}
+      />
+    </div>
+  );
+}
+
+export default App;
+=================== ./reactapp/src/components/PriceTag.css ===================
+#price-tag {
+    background: white;
+    border: 2px solid #e67e22;
+    border-radius: 10px;
+    padding: 24px;
+    max-width: 400px;
+    margin: 40px auto;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  #product-name {
+    color: #e67e22;
+    font-size: 24px;
+    margin-bottom: 12px;
+  }
+  
+  #displayed-price {
+    color: #2c3e50;
+    font-size: 20px;
+    margin-bottom: 16px;
+  }
+  
+  #toggle-discount {
+    background: #e67e22;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+=================== ./reactapp/src/components/PriceTag.jsx ===================
+import React, { useState } from "react";
+import PropTypes from "prop-types";
+import "./PriceTag.css";
+
+function PriceTag({ productName, originalPrice }) {
+  const [isDiscounted, setIsDiscounted] = useState(false);
+
+  const displayedPrice = isDiscounted
+    ? originalPrice * 0.9
+    : originalPrice;
+
+  const toggleDiscount = () => {
+    setIsDiscounted(!isDiscounted);
+  };
+
+  return (
+    <div id="price-tag">
+      <h2 id="product-name">{productName}</h2>
+
+      <p id="displayed-price">
+        Price: ₹{displayedPrice}
+      </p>
+
+      <button id="toggle-discount" onClick={toggleDiscount}>
+        {isDiscounted ? "Remove Discount" : "Apply Discount"}
+      </button>
+    </div>
+  );
+}
+
+PriceTag.propTypes = {
+  productName: PropTypes.string.isRequired,
+  originalPrice: PropTypes.number.isRequired,
+};
+
+export default PriceTag;
+=================== ./reactapp/src/index.css ===================
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+=================== ./reactapp/src/index.js ===================
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import './index.css';
+import App from './App';
+import reportWebVitals from './reportWebVitals';
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
+
+// If you want to start measuring performance in your app, pass a function
+// to log results (for example: reportWebVitals(console.log))
+// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
+reportWebVitals();
+
+=================== ./reactapp/src/reportWebVitals.js ===================
+const reportWebVitals = onPerfEntry => {
+  if (onPerfEntry && onPerfEntry instanceof Function) {
+    import('web-vitals').then(({ getCLS, getFID, getFCP, getLCP, getTTFB }) => {
+      getCLS(onPerfEntry);
+      getFID(onPerfEntry);
+      getFCP(onPerfEntry);
+      getLCP(onPerfEntry);
+      getTTFB(onPerfEntry);
+    });
+  }
+};
+
+export default reportWebVitals;
+
+=================== ./reactapp/src/setupTests.js ===================
+// jest-dom adds custom jest matchers for asserting on DOM nodes.
+// allows you to do things like:
+// expect(element).toHaveTextContent(/react/i)
+// learn more: https://github.com/testing-library/jest-dom
+import '@testing-library/jest-dom';
+
+=================== ./reactapp/src/tests/App.test.js ===================
+import React from 'react';
+import { render, screen, fireEvent } from '@testing-library/react';
+import "@testing-library/jest-dom";
+import App from '../App';
+import PriceTag from '../components/PriceTag';
+
+describe("App", () => {
+  test("renders_price_tag_component", () => {
+    render(<App />);
+    const tag = document.querySelector('#price-tag');
+    expect(tag).toBeInTheDocument();
+  });
+});
+
+describe("PriceTag", () => {
+  test("displays_product_name", () => {
+    render(<PriceTag productName="Wireless Headphones" originalPrice={2000} />);
+    expect(screen.getByText("Wireless Headphones")).toBeInTheDocument();
+  });
+
+  test("displays_original_price", () => {
+    render(<PriceTag productName="Wireless Headphones" originalPrice={2000} />);
+    expect(screen.getByText("Price: ₹2000")).toBeInTheDocument();
+  });
+
+  test("displays_apply_discount_button", () => {
+    render(<PriceTag productName="Wireless Headphones" originalPrice={2000} />);
+    expect(screen.getByText("Apply Discount")).toBeInTheDocument();
+  });
+
+  test("toggles_price_on_discount_click", () => {
+    render(<PriceTag productName="Wireless Headphones" originalPrice={2000} />);
+    const button = document.querySelector('#toggle-discount');
+    fireEvent.click(button);
+    expect(screen.getByText("Price: ₹1800")).toBeInTheDocument();
+  });
+
+  test("toggles_button_text_on_click", () => {
+    render(<PriceTag productName="Wireless Headphones" originalPrice={2000} />);
+    const button = document.querySelector('#toggle-discount');
+    fireEvent.click(button);
+    expect(screen.getByText("Remove Discount")).toBeInTheDocument();
+  });
+});
+=================== ./react/tests/App.test.js ===================
+import React from 'react';
+import { render, screen, fireEvent } from '@testing-library/react';
+import "@testing-library/jest-dom";
+import App from '../App';
+import PriceTag from '../components/PriceTag';
+
+describe("App", () => {
+  test("renders_price_tag_component", () => {
+    render(<App />);
+    const tag = document.querySelector('#price-tag');
+    expect(tag).toBeInTheDocument();
+  });
+});
+
+describe("PriceTag", () => {
+  test("displays_product_name", () => {
+    render(<PriceTag productName="Wireless Headphones" originalPrice={2000} />);
+    expect(screen.getByText("Wireless Headphones")).toBeInTheDocument();
+  });
+
+  test("displays_original_price", () => {
+    render(<PriceTag productName="Wireless Headphones" originalPrice={2000} />);
+    expect(screen.getByText("Price: ₹2000")).toBeInTheDocument();
+  });
+
+  test("displays_apply_discount_button", () => {
+    render(<PriceTag productName="Wireless Headphones" originalPrice={2000} />);
+    expect(screen.getByText("Apply Discount")).toBeInTheDocument();
+  });
+
+  test("toggles_price_on_discount_click", () => {
+    render(<PriceTag productName="Wireless Headphones" originalPrice={2000} />);
+    const button = document.querySelector('#toggle-discount');
+    fireEvent.click(button);
+    expect(screen.getByText("Price: ₹1800")).toBeInTheDocument();
+  });
+
+  test("toggles_button_text_on_click", () => {
+    render(<PriceTag productName="Wireless Headphones" originalPrice={2000} />);
+    const button = document.querySelector('#toggle-discount');
+    fireEvent.click(button);
+    expect(screen.getByText("Remove Discount")).toBeInTheDocument();
+  });
+});

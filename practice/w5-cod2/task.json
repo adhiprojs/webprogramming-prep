@@ -1,0 +1,17 @@
+{
+  "name": "w5-cod2",
+  "week": "w5",
+  "kind": "cod",
+  "number": 2,
+  "type": "puppeteer",
+  "title": "Footer with Social Icons",
+  "starterKind": "blank",
+  "editable": [
+    "public/index.html",
+    "public/styles.css"
+  ],
+  "test": "puppeteer/test.js",
+  "testCount": 10,
+  "starterPasses": 0,
+  "runTotal": 10
+}

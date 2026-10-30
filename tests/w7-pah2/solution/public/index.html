@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Fitness Activity Planner</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <h1>Fitness Activity Planner</h1>
+
+  <fieldset id="goalFieldset">
+    <legend>Select Fitness Goal</legend>
+    <div class="goal-options">
+      <label><input type="radio" name="fitnessGoal" value="weightloss" data-calories="400"> Weight Loss (400 cal/day)</label>
+      <label><input type="radio" name="fitnessGoal" value="muscle" data-calories="300"> Muscle Gain (300 cal/day)</label>
+      <label><input type="radio" name="fitnessGoal" value="stamina" data-calories="350"> Stamina (350 cal/day)</label>
+    </div>
+    <p>Selected Goal: <strong id="goalDisplay">None</strong></p>
+  </fieldset>
+
+  <fieldset id="daysFieldset">
+    <legend>Select Workout Days</legend>
+    <div class="days-grid">
+      <label><input type="checkbox" id="day1" class="day-checkbox" value="Monday"> Monday</label>
+      <label><input type="checkbox" id="day2" class="day-checkbox" value="Tuesday"> Tuesday</label>
+      <label><input type="checkbox" id="day3" class="day-checkbox" value="Wednesday"> Wednesday</label>
+      <label><input type="checkbox" id="day4" class="day-checkbox" value="Thursday"> Thursday</label>
+      <label><input type="checkbox" id="day5" class="day-checkbox" value="Friday"> Friday</label>
+      <label><input type="checkbox" id="day6" class="day-checkbox" value="Saturday"> Saturday</label>
+      <label><input type="checkbox" id="day7" class="day-checkbox" value="Sunday"> Sunday</label>
+    </div>
+  </fieldset>
+
+  <div class="actions">
+    <button id="calcPlanBtn">Calculate Plan</button>
+    <button id="resetPlanBtn">Reset</button>
+  </div>
+
+  <fieldset id="summaryFieldset">
+    <legend>Weekly Summary</legend>
+    <div class="summary-grid">
+      <div class="summary-card workout">
+        <p>Workout Days</p>
+        <div id="workoutDays">0</div>
+      </div>
+      <div class="summary-card calories">
+        <p>Calories Burned</p>
+        <div id="caloriesBurned">0</div>
+      </div>
+      <div class="summary-card rest">
+        <p>Rest Days</p>
+        <div id="restDays">0</div>
+      </div>
+    </div>
+  </fieldset>
+
+  <script src="script.js"></script>
+</body>
+</html>

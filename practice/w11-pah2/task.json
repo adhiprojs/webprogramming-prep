@@ -1,0 +1,19 @@
+{
+  "name": "w11-pah2",
+  "week": "w11",
+  "kind": "pah",
+  "number": 2,
+  "type": "react",
+  "title": "Recipe Cards (React)",
+  "starterKind": "blank",
+  "editable": [
+    "reactapp/src/App.js",
+    "reactapp/src/components/RecipeCard.jsx",
+    "reactapp/src/App.css",
+    "reactapp/src/components/RecipeCard.css"
+  ],
+  "test": "react/tests/App.test.js",
+  "testCount": 8,
+  "starterPasses": 0,
+  "runTotal": 8
+}

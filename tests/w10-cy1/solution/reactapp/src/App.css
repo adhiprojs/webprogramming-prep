@@ -1,0 +1,82 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f1f4f7;
+}
+
+.App {
+  min-height: 100vh;
+}
+
+.dashboard {
+  width: 394px;
+  margin: 45px auto;
+  padding: 38px 24px 30px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+}
+
+.dashboard h1 {
+  margin: 0 0 25px;
+  padding-bottom: 7px;
+  border-bottom: 3px solid #2ecc71;
+  color: #30465b;
+  font-size: 24px;
+  letter-spacing: 1px;
+}
+
+.dashboard label {
+  display: block;
+  margin-bottom: 6px;
+  color: #30465b;
+  font-size: 11px;
+  font-weight: bold;
+}
+
+.dashboard input {
+  width: 100%;
+  height: 31px;
+  padding: 6px 9px;
+  box-sizing: border-box;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 11px;
+  font-style: italic;
+  outline: none;
+  margin-bottom: 20px;
+}
+
+.dashboard input:focus {
+  border-color: #2ecc71;
+}
+
+.crop-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.crop-item {
+  min-height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 10px;
+  box-sizing: border-box;
+  background: #f7f7f7;
+  border-left: 3px solid #2ecc71;
+  border-radius: 6px;
+  color: #222;
+  font-size: 11px;
+}
+
+.crop-item strong {
+  color: #30465b;
+  font-size: 11px;
+}
+
+.crop-item span {
+  text-align: right;
+}

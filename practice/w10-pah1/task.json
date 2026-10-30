@@ -1,0 +1,17 @@
+{
+  "name": "w10-pah1",
+  "week": "w10",
+  "kind": "pah",
+  "number": 1,
+  "type": "react",
+  "title": "Task Manager (React)",
+  "starterKind": "blank",
+  "editable": [
+    "reactapp/src/App.js",
+    "reactapp/src/App.css"
+  ],
+  "test": "react/tests/App.test.js",
+  "testCount": 13,
+  "starterPasses": 0,
+  "runTotal": 13
+}

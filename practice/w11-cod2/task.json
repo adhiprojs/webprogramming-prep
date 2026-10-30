@@ -1,0 +1,19 @@
+{
+  "name": "w11-cod2",
+  "week": "w11",
+  "kind": "cod",
+  "number": 2,
+  "type": "react",
+  "title": "PriceTag with Discount Toggle (React)",
+  "starterKind": "blank",
+  "editable": [
+    "reactapp/src/App.js",
+    "reactapp/src/components/PriceTag.jsx",
+    "reactapp/src/App.css",
+    "reactapp/src/components/PriceTag.css"
+  ],
+  "test": "react/tests/App.test.js",
+  "testCount": 6,
+  "starterPasses": 0,
+  "runTotal": 6
+}

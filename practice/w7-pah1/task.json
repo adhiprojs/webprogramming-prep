@@ -1,0 +1,18 @@
+{
+  "name": "w7-pah1",
+  "week": "w7",
+  "kind": "pah",
+  "number": 1,
+  "type": "puppeteer",
+  "title": "Shopping Items and Payment Discount",
+  "starterKind": "blank",
+  "editable": [
+    "public/index.html",
+    "public/script.js",
+    "public/style.css"
+  ],
+  "test": "puppeteer/test.js",
+  "testCount": 8,
+  "starterPasses": 0,
+  "runTotal": 9
+}

@@ -1,0 +1,366 @@
+=================== ./appdb/admin/system.version.metadata.json ===================
+{"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_"}],"uuid":"1d66c6d6ac1747c0ad67554793703ef6","collectionName":"system.version","type":"collection"}
+=================== ./appdb/prelude.json ===================
+{"ServerVersion":"6.0.29","ToolVersion":"100.17.0"}
+=================== ./package.json ===================
+{
+  "name": "webtest",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "rm -rf node_modules && npm i && node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "puppeteer": "^19.11.1",
+    "puppeteer-core": "^21.2.0"
+  }
+}
+
+=================== ./public/index.html ===================
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Movie Genre Poll</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <h1>Movie Genre Poll</h1>
+
+  <fieldset id="ageFieldset">
+    <legend>Select Your Age Group</legend>
+    <div class="age-options">
+      <label><input type="radio" name="ageGroup" value="teen"> Teen (13-17)</label>
+      <label><input type="radio" name="ageGroup" value="adult"> Adult (18-40)</label>
+      <label><input type="radio" name="ageGroup" value="senior"> Senior (40+)</label>
+    </div>
+    <p>Selected Age Group: <strong id="ageDisplay">None</strong></p>
+  </fieldset>
+
+  <fieldset id="genreFieldset">
+    <legend>Choose Your Favourite Genres</legend>
+    <div class="genre-grid">
+      <label><input type="checkbox" id="genre1" class="genre-checkbox" value="Action"> Action</label>
+      <label><input type="checkbox" id="genre2" class="genre-checkbox" value="Comedy"> Comedy</label>
+      <label><input type="checkbox" id="genre3" class="genre-checkbox" value="Drama"> Drama</label>
+      <label><input type="checkbox" id="genre4" class="genre-checkbox" value="Thriller"> Thriller</label>
+      <label><input type="checkbox" id="genre5" class="genre-checkbox" value="Romance"> Romance</label>
+      <label><input type="checkbox" id="genre6" class="genre-checkbox" value="Sci-Fi"> Sci-Fi</label>
+    </div>
+  </fieldset>
+
+  <div class="actions">
+    <button id="pollSubmitBtn">Submit Poll</button>
+    <button id="pollResetBtn">Reset</button>
+  </div>
+
+  <fieldset id="resultsFieldset">
+    <legend>Poll Results</legend>
+    <div class="summary-grid">
+      <div class="summary-card selected">
+        <p>Genres Selected</p>
+        <div id="genreCount">0</div>
+      </div>
+      <div class="summary-card total">
+        <p>Total Genres Available</p>
+        <div id="totalGenres">6</div>
+      </div>
+    </div>
+    <p><strong>Selected Genres:</strong></p>
+    <ul id="genreResultList">
+      <li id="noGenresMsg">None</li>
+    </ul>
+  </fieldset>
+
+  <script src="script.js"></script>
+</body>
+</html>
+=================== ./public/script.js ===================
+document.addEventListener('DOMContentLoaded', () => {
+
+    const ageRadios = document.querySelectorAll('input[type="radio"][name="ageGroup"]');
+    const checkboxes = document.querySelectorAll('input[type="checkbox"].genre-checkbox');
+    const ageDisplay = document.getElementById('ageDisplay');
+    const pollSubmitBtn = document.getElementById('pollSubmitBtn');
+    const pollResetBtn = document.getElementById('pollResetBtn');
+    const genreCountEl = document.getElementById('genreCount');
+    const totalGenresEl = document.getElementById('totalGenres');
+    const genreResultList = document.getElementById('genreResultList');
+  
+    totalGenresEl.textContent = checkboxes.length;
+  
+    // Update age display on radio change
+    ageRadios.forEach(radio => {
+      radio.addEventListener('change', () => {
+        ageDisplay.textContent = radio.value;
+      });
+    });
+  
+    // Read through radio buttons and find selected age group using a while loop
+    function getSelectedAgeGroup() {
+      let selected = null;
+      let i = 0;
+      while (i < ageRadios.length) {
+        if (ageRadios[i].checked) {
+          selected = ageRadios[i].value;
+          break;
+        }
+        i++;
+      }
+      return selected;
+    }
+  
+    pollSubmitBtn.addEventListener('click', () => {
+      // Iterate genres and count selected ones using a for loop
+      let count = 0;
+      const selectedGenres = [];
+      for (let i = 0; i < checkboxes.length; i++) {
+        if (checkboxes[i].checked) {
+          count++;
+          selectedGenres.push(checkboxes[i].value);
+        }
+      }
+  
+      // Confirm selected age group (used to satisfy while-loop requirement)
+      getSelectedAgeGroup();
+  
+      genreCountEl.textContent = count;
+  
+      // Build the genre result list using a do...while loop
+      genreResultList.innerHTML = '';
+      if (selectedGenres.length === 0) {
+        const li = document.createElement('li');
+        li.id = 'noGenresMsg';
+        li.textContent = 'None';
+        genreResultList.appendChild(li);
+      } else {
+        let idx = 0;
+        do {
+          const li = document.createElement('li');
+          li.textContent = selectedGenres[idx];
+          genreResultList.appendChild(li);
+          idx++;
+        } while (idx < selectedGenres.length);
+      }
+    });
+  
+    pollResetBtn.addEventListener('click', () => {
+      checkboxes.forEach(cb => { cb.checked = false; });
+      ageRadios.forEach(r => { r.checked = false; });
+      ageDisplay.textContent = 'None';
+      genreCountEl.textContent = 0;
+      genreResultList.innerHTML = '<li id="noGenresMsg">None</li>';
+    });
+  
+  });
+=================== ./public/style.css ===================
+* { box-sizing: border-box; font-family: Arial, sans-serif; }
+
+body {
+  background: #f0f2f5;
+  margin: 0;
+  padding: 30px;
+  color: #1a1a2e;
+}
+
+h1 { text-align: center; }
+
+fieldset {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  max-width: 900px;
+  margin: 20px auto;
+  padding: 20px 25px;
+}
+
+legend {
+  font-weight: bold;
+  padding: 0 8px;
+}
+
+.age-options {
+  display: flex;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
+.genre-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.actions {
+  text-align: center;
+  margin: 20px 0;
+}
+
+button {
+  padding: 12px 24px;
+  font-size: 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  margin: 0 8px;
+}
+
+#pollSubmitBtn { background: #4361ee; color: #fff; }
+#pollResetBtn { background: #e0e0e0; color: #1a1a2e; }
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.summary-card {
+  text-align: center;
+  border-radius: 8px;
+  padding: 16px;
+  color: #fff;
+}
+
+.summary-card div {
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.summary-card.selected { background: #4361ee; }
+.summary-card.total { background: #6b7280; }
+=================== ./puppeteer/test.js ===================
+//Write your code here...
+const puppeteer = require('puppeteer');
+
+(async () => {
+  const browser = await puppeteer.launch({
+    headless: false,
+    args: ['--headless', '--disable-gpu', '--remote-debugging-port=9222', '--no-sandbox', '--disable-setuid-sandbox']
+  });
+
+  const url = 'https://8081-workspace.examly.io'; 
+  const page = await browser.newPage();
+
+  try {
+    await page.goto(url, { waitUntil: 'domcontentloaded' });
+  } catch {
+    console.log('TESTCASE:page_load:failure');
+    await browser.close();
+    return;
+  }
+
+  const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+  // Test 1: At least 2 fieldset and legend elements exist
+  try {
+    const result = await page.evaluate(() => {
+      return document.querySelectorAll('fieldset').length >= 2 &&
+             document.querySelectorAll('legend').length >= 2;
+    });
+    console.log(result
+      ? 'TESTCASE:fieldset_and_legend_elements_exist:success'
+      : 'TESTCASE:fieldset_and_legend_elements_exist:failure');
+  } catch {
+    console.log('TESTCASE:fieldset_and_legend_elements_exist:failure');
+  }
+
+  // Test 2: 3 radio buttons with name="ageGroup" and values teen, adult, senior
+  try {
+    const result = await page.evaluate(() => {
+      const radios = document.querySelectorAll('input[type="radio"][name="ageGroup"]');
+      const values = Array.from(radios).map(r => r.value);
+      return radios.length === 3 &&
+             values.includes('teen') &&
+             values.includes('adult') &&
+             values.includes('senior');
+    });
+    console.log(result
+      ? 'TESTCASE:age_group_radio_buttons_exist:success'
+      : 'TESTCASE:age_group_radio_buttons_exist:failure');
+  } catch {
+    console.log('TESTCASE:age_group_radio_buttons_exist:failure');
+  }
+
+  // Test 3: At least 5 checkboxes with class genre-checkbox
+  try {
+    const count = await page.evaluate(() =>
+      document.querySelectorAll('input[type="checkbox"].genre-checkbox').length
+    );
+    console.log(count >= 5
+      ? 'TESTCASE:genre_checkboxes_exist:success'
+      : 'TESTCASE:genre_checkboxes_exist:failure');
+  } catch {
+    console.log('TESTCASE:genre_checkboxes_exist:failure');
+  }
+
+  // Test 4: Clicking adult radio updates #ageDisplay
+  try {
+    await page.evaluate(() => {
+      const radio = document.querySelector('input[type="radio"][name="ageGroup"][value="adult"]');
+      if (radio) radio.click();
+    });
+    await wait(300);
+    const text = await page.$eval('#ageDisplay', el => el.textContent.trim());
+    console.log(text.includes('adult')
+      ? 'TESTCASE:selecting_age_group_updates_display:success'
+      : 'TESTCASE:selecting_age_group_updates_display:failure');
+  } catch {
+    console.log('TESTCASE:selecting_age_group_updates_display:failure');
+  }
+
+  // Test 5: Check 4 genres, click submit, verify genreCount = 4
+  try {
+    await page.evaluate(() => {
+      const boxes = document.querySelectorAll('input[type="checkbox"].genre-checkbox');
+      for (let i = 0; i < 4; i++) {
+        if (boxes[i]) boxes[i].checked = true;
+      }
+    });
+    await page.evaluate(() => {
+      const btn = document.querySelector('#pollSubmitBtn');
+      if (btn) btn.click();
+    });
+    await wait(300);
+    const count = await page.$eval('#genreCount', el => parseInt(el.textContent.trim()));
+    console.log(count === 4
+      ? 'TESTCASE:selected_genre_count_is_correct:success'
+      : 'TESTCASE:selected_genre_count_is_correct:failure');
+  } catch {
+    console.log('TESTCASE:selected_genre_count_is_correct:failure');
+  }
+
+  // Test 6: Reset clears all checkboxes and resets genreCount to 0
+  try {
+    await page.evaluate(() => {
+      const btn = document.querySelector('#pollResetBtn');
+      if (btn) btn.click();
+    });
+    await wait(300);
+    const count = await page.$eval('#genreCount', el => parseInt(el.textContent.trim()));
+    const anyChecked = await page.evaluate(() => {
+      const boxes = document.querySelectorAll('input[type="checkbox"].genre-checkbox');
+      return Array.from(boxes).some(b => b.checked);
+    });
+    console.log(count === 0 && !anyChecked
+      ? 'TESTCASE:reset_clears_all_selections:success'
+      : 'TESTCASE:reset_clears_all_selections:failure');
+  } catch {
+    console.log('TESTCASE:reset_clears_all_selections:failure');
+  }
+
+  await browser.close();
+})();
+=================== ./server.js ===================
+const express = require('express');
+const app = express();
+const port = 8081;
+
+app.use(express.static('public'))
+app.listen(port, () => console.log(`listening on port ${port}!`));

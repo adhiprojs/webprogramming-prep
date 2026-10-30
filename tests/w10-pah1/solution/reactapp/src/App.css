@@ -1,0 +1,12 @@
+.App {
+  min-height: 100vh;
+  background-color: #f8f9fa;
+}
+
+.card {
+  transition: all 0.2s ease-in-out;
+}
+
+.form-check-label {
+  margin-left: 8px;
+}

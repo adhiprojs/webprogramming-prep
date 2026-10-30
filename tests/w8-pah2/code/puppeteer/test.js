@@ -1,0 +1,130 @@
+const puppeteer = require('puppeteer');
+
+(async () => {
+  const browser = await puppeteer.launch({
+    headless: false,
+    args: ['--headless', '--disable-gpu', '--remote-debugging-port=9222', '--no-sandbox', '--disable-setuid-sandbox']
+  });
+
+  const page = await browser.newPage();
+  const url = 'https://8081-workspace.examly.io'; // Replace with actual local path
+
+  try {
+    await page.goto(url, { waitUntil: 'domcontentloaded' });
+    await page.waitForSelector('#editor');
+  } catch {
+    console.log('TESTCASE:page_load:failure');
+    await browser.close();
+    return;
+  }
+
+  const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+  // Test 1: Default font size
+  const fontSize = await page.$eval('#editor', el => getComputedStyle(el).fontSize);
+  console.log(Math.abs(parseFloat(fontSize) - 12) < 2
+    ? 'TESTCASE:default_font_size_is_12px:success'
+    : 'TESTCASE:default_font_size_is_12px:failure');
+
+  // Test 2: Font size to 16px
+  await page.select('#fontSizeSelect', '16px');
+  await wait(100);
+  const fontSize2 = await page.$eval('#editor', el => getComputedStyle(el).fontSize);
+  console.log(Math.abs(parseFloat(fontSize2) - 16) < 2
+    ? 'TESTCASE:change_font_size_to_16px:success'
+    : 'TESTCASE:change_font_size_to_16px:failure');
+
+  // Test 3: Font color to red
+  await page.select('#fontColorSelect', 'red');
+  await wait(100);
+  const fontColor = await page.$eval('#editor', el => {
+    const computedColor = getComputedStyle(el).color;
+    return computedColor.split('(')[0];  // Extract 'rgb' or 'rgba'
+  });
+  console.log(fontColor.toLowerCase() === 'rgb'
+    ? 'TESTCASE:change_font_color_to_red:success'
+    : 'TESTCASE:change_font_color_to_red:failure');
+
+  // Test 4: Apply bold (Check if 'active' class is added)
+  const boldButton = await page.$x("//button[contains(text(),'Bold')]");  // Find button with "Bold" text
+  await boldButton[0].click();
+  const isBoldActive = await boldButton[0].evaluate(el => el.classList.contains('active'));
+  console.log(isBoldActive
+    ? 'TESTCASE:click_bold_applies_bold:success'
+    : 'TESTCASE:click_bold_applies_bold:failure');
+
+  // Test 5: Apply italic (Check if 'active' class is added)
+  const italicButton = await page.$x("//button[contains(text(),'Italic')]");  // Find button with "Italic" text
+  await italicButton[0].click();
+  const isItalicActive = await italicButton[0].evaluate(el => el.classList.contains('active'));
+  console.log(isItalicActive
+    ? 'TESTCASE:click_italic_applies_italic:success'
+    : 'TESTCASE:click_italic_applies_italic:failure');
+
+  // Test 6: Toggle bold back (Check if 'active' class is removed)
+  await boldButton[0].click();
+  const isBoldActiveAfterToggle = await boldButton[0].evaluate(el => el.classList.contains('active'));
+  console.log(!isBoldActiveAfterToggle
+    ? 'TESTCASE:bold_toggle_back_to_normal:success'
+    : 'TESTCASE:bold_toggle_back_to_normal:failure');
+
+  // Test 7: Bold + Italic combo (Check if both are applied in the editor)
+  await boldButton[0].click();  // Reapply bold
+  await italicButton[0].click();  // Apply italic
+
+  // Check if both Bold and Italic are applied by inspecting the editor's font styles
+  const editorStyle = await page.$eval('#editor', el => ({
+    weight: getComputedStyle(el).fontWeight,
+    style: getComputedStyle(el).fontStyle
+  }));
+
+  //console.log(`Bold Active: ${isBoldActive}, Italic Active: ${isItalicActive}`);
+
+  console.log(isBoldActive && isItalicActive
+    ? 'TESTCASE:bold_and_italic_combination_works:success'
+    : 'TESTCASE:bold_and_italic_combination_works:failure');
+
+  // Test 8: Reset (Check if all controls are reset to default)
+  await page.click('#resetBtn');
+  await wait(100);
+  const resetState = await page.evaluate(() => ({
+    size: document.getElementById('fontSizeSelect').value,
+    color: document.getElementById('fontColorSelect').value,
+    boldActive: document.getElementById('boldBtn').classList.contains('active'),
+    italicActive: document.getElementById('italicBtn').classList.contains('active')
+  }));
+  console.log(
+    resetState.size === '12px' && resetState.color === 'black' && !resetState.boldActive && !resetState.italicActive
+    ? 'TESTCASE:reset_button_sets_defaults:success'
+    : 'TESTCASE:reset_button_sets_defaults:failure');
+
+  // Test 9: Rapid changes (Check if multiple changes reflect correctly)
+  await page.select('#fontSizeSelect', '20px');
+  await page.select('#fontColorSelect', 'blue');
+  await page.click('#boldBtn');
+  await page.click('#italicBtn');
+  const rapidChanges = await page.evaluate(() => ({
+    size: document.getElementById('fontSizeSelect').value,
+    color: document.getElementById('fontColorSelect').value,
+    boldActive: document.getElementById('boldBtn').classList.contains('active'),
+    italicActive: document.getElementById('italicBtn').classList.contains('active')
+  }));
+  console.log(
+    rapidChanges.size === '20px' && rapidChanges.color === 'blue' && rapidChanges.boldActive && rapidChanges.italicActive
+    ? 'TESTCASE:multiple_rapid_changes_work:success'
+    : 'TESTCASE:multiple_rapid_changes_work:failure');
+
+  // Test 10: Controls retain selected values (Check if selected values are retained after changes)
+  const selectedValues = await page.evaluate(() => ({
+    size: document.getElementById('fontSizeSelect').value,
+    color: document.getElementById('fontColorSelect').value,
+    boldActive: document.getElementById('boldBtn').classList.contains('active'),
+    italicActive: document.getElementById('italicBtn').classList.contains('active')
+  }));
+  const controlsMatch = selectedValues.size === '20px' && selectedValues.color === 'blue' && selectedValues.boldActive && selectedValues.italicActive;
+  console.log(controlsMatch
+    ? 'TESTCASE:controls_retain_selected_values:success'
+    : 'TESTCASE:controls_retain_selected_values:failure');
+
+  await browser.close();
+})();

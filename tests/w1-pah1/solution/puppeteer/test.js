@@ -1,0 +1,128 @@
+const puppeteer = require('puppeteer');
+
+(async () => {
+  const browser = await puppeteer.launch({
+    headless: false,
+    args: ['--headless', '--disable-gpu', '--remote-debugging-port=9222', '--no-sandbox', '--disable-setuid-sandbox']
+  });
+
+  const url = 'https://8081-workspace.examly.io'; // Update with your local file path
+  const page = await browser.newPage();
+
+  // Test Case 1: Store Name Heading ("Tech Shop Online")
+  try {
+    await page.goto(url);
+    const headerText = await page.evaluate(() => {
+      return document.querySelector('h1').innerText;
+    });
+    if (headerText === 'Tech Shop Online') {
+      console.log('TESTCASE:verify_header_text:success');
+    } else {
+      console.log('TESTCASE:verify_header_text:failure');
+    }
+  } catch {
+    console.log('TESTCASE:verify_header_text:failure');
+  }
+
+  // Test Case 2: Mission Statement ("Our mission is to provide affordable, high-quality electronics...")
+  try {
+    const missionText = await page.evaluate(() => {
+      return document.querySelector('h2 + p').innerText;
+    });
+    if (missionText === 'Our mission is to provide affordable, high-quality electronics to customers around the world.') {
+      console.log('TESTCASE:verify_mission_statement:success');
+    } else {
+      console.log('TESTCASE:verify_mission_statement:failure');
+    }
+  } catch {
+    console.log('TESTCASE:verify_mission_statement:failure');
+  }
+
+  // Test Case 3: Contact Information Heading ("Contact Information")
+  try {
+    const contactHeaderText = await page.evaluate(() => {
+      return document.querySelector('h3').innerText;
+    });
+    if (contactHeaderText === 'Contact Information') {
+      console.log('TESTCASE:verify_contact_header_text:success');
+    } else {
+      console.log('TESTCASE:verify_contact_header_text:failure');
+    }
+  } catch {
+    console.log('TESTCASE:verify_contact_header_text:failure');
+  }
+
+  // Test Case 4: Contact Details ("We are committed to providing excellent customer service...")
+  try {
+    const contactDetailsText = await page.evaluate(() => {
+      return document.querySelectorAll('p')[1].innerText;
+    });
+    if (contactDetailsText === 'We are committed to providing excellent customer service. Reach us at contact@techshop.com or call 1-800-123-4567.') {
+      console.log('TESTCASE:verify_contact_details:success');
+    } else {
+      console.log('TESTCASE:verify_contact_details:failure');
+    }
+  } catch {
+    console.log('TESTCASE:verify_contact_details:failure');
+  }
+
+  // Test Case 5: Footer Text ("2025 Tech Shop Online. All rights reserved.")
+  try {
+    const footerText = await page.evaluate(() => {
+      return document.querySelector('footer p').innerText;
+    });
+    if (footerText === '2025 Tech Shop Online. All rights reserved.') {
+      console.log('TESTCASE:verify_footer_text:success');
+    } else {
+      console.log('TESTCASE:verify_footer_text:failure');
+    }
+  } catch {
+    console.log('TESTCASE:verify_footer_text:failure');
+  }
+
+  // Test Case 6: Why Choose Us Heading ("Why Choose Us?")
+  try {
+    const whyChooseHeader = await page.evaluate(() => {
+      return document.querySelectorAll('h2')[1].innerText;
+    });
+    if (whyChooseHeader === 'Why Choose Us?') {
+      console.log('TESTCASE:verify_why_choose_us_header:success');
+    } else {
+      console.log('TESTCASE:verify_why_choose_us_header:failure');
+    }
+  } catch {
+    console.log('TESTCASE:verify_why_choose_us_header:failure');
+  }
+
+  // Test Case 7: Why Choose Us Description ("At Tech Shop Online, we offer the best deals on electronics,...")
+  try {
+    const whyChooseDescription = await page.evaluate(() => {
+      return document.querySelectorAll('p')[3].innerText;
+    });
+    //console.log(whyChooseDescription)
+    if (whyChooseDescription === 'At Tech Shop Online, we offer the best deals on electronics, fast shipping, and excellent customer support. We make sure that every product you purchase meets our highest quality standards.') {
+      console.log('TESTCASE:verify_why_choose_us_description:success');
+    } else {
+      console.log('TESTCASE:verify_why_choose_us_description:failure');
+    }
+  } catch {
+    console.log('TESTCASE:verify_why_choose_us_description:failure');
+  }
+  
+  // Test Case 8: Product Description ("We offer a range of premium laptops...")
+  try {
+    const productDescription = await page.evaluate(() => {
+      return document.querySelectorAll('p')[4].innerText;
+    });
+    //console.log(productDescription)
+    if (productDescription === 'We offer a range of premium laptops, including the latest models with high-speed processors and long-lasting batteries. Perfect for both work and play!') {
+      console.log('TESTCASE:verify_product_description:success');
+    } else {
+      console.log('TESTCASE:verify_product_description:failure');
+    }
+  } catch {
+    console.log('TESTCASE:verify_product_description:failure');
+  }
+
+  await browser.close();
+})();

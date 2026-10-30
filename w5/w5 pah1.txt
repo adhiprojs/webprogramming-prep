@@ -1,0 +1,350 @@
+=================== ./appdb/admin/system.version.metadata.json ===================
+{"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_"}],"uuid":"7f3e0b484dd44ca9965e50c93c7176f3","collectionName":"system.version","type":"collection"}
+=================== ./appdb/prelude.json ===================
+{"ServerVersion":"6.0.29","ToolVersion":"100.17.0"}
+=================== ./package.json ===================
+{
+  "name": "webtest",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "rm -rf node_modules && npm i && node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "puppeteer": "^19.11.1",
+    "puppeteer-core": "^21.2.0"
+  }
+}
+
+=================== ./public/index.html ===================
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Customer Testimonials</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <section id="testimonialsSection">
+    <h1 class="section-title">What Our Customers Say</h1>
+
+    <div class="testimonialsWrapper">
+      <div class="testimonialDiv">
+        <img src="Jessica Smith.jpg" alt="Jessica Smith">
+        <h4 class="customerName">Jessica Smith</h4>
+        <p class="customerReview">Excellent service! The team was professional and delivered exactly what I needed. Highly recommend their services to anyone looking for quality work.</p>
+      </div>
+
+      <div class="testimonialDiv">
+        <img src="Michael Johnson.jpg" alt="Michael Johnson">
+        <h4 class="customerName">Michael Johnson</h4>
+        <p class="customerReview">Outstanding experience from start to finish. They understood my requirements perfectly and exceeded all expectations. Will definitely work with them again!</p>
+      </div>
+
+      <div class="testimonialDiv">
+        <img src="Sarah Brown.jpg" alt="Sarah Brown">
+        <h4 class="customerName">Sarah Brown</h4>
+        <p class="customerReview">Amazing quality and attention to detail. The project was completed on time and within budget. I couldn't be happier with the results!</p>
+      </div>
+    </div>
+  </section>
+
+</body>
+</html>
+=================== ./public/styles.css ===================
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #f5f5f5;
+  }
+  
+  #testimonialsSection {
+    padding: 60px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .section-title {
+    text-align: center;
+    margin-bottom: 40px;
+    font-size: 32px;
+    color: #222222;
+  }
+  
+  .testimonialsWrapper {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px;
+    width: 100%;
+    max-width: 1100px;
+  }
+  
+  .testimonialDiv {
+    background-color: #ffffff;
+    border-radius: 8px;
+    padding: 30px;
+    text-align: center;
+    flex: 1 1 280px;
+    max-width: 320px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  }
+  
+  .testimonialDiv img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 15px;
+    transition: transform 0.3s ease;
+  }
+  
+  .testimonialDiv:hover img {
+    transform: scale(1.1);
+  }
+  
+  .customerName {
+    margin-bottom: 15px;
+    font-size: 18px;
+    color: #222222;
+  }
+  
+  .customerReview {
+    color: #000000;
+    line-height: 1.6;
+    transition: color 0.3s ease;
+  }
+  
+  .testimonialDiv:hover .customerReview {
+    color: #4a6cf7;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .testimonialsWrapper {
+      flex-direction: column;
+      align-items: center;
+    }
+  
+    .testimonialDiv {
+      max-width: 100%;
+      width: 100%;
+    }
+  }
+=================== ./puppeteer/test.js ===================
+const puppeteer = require('puppeteer');
+
+(async () => {
+  const browser = await puppeteer.launch({
+    headless: false,
+    args: ['--headless', '--disable-gpu', '--remote-debugging-port=9222', '--no-sandbox', '--disable-setuid-sandbox']
+  });
+
+  const url = 'https://8081-workspace.examly.io'; // Update with your local file path
+  const page = await browser.newPage();
+
+  // Test Case 1: Verify Testimonials Section Exists
+  try {
+    await page.goto(url);
+    const testimonialsSectionExists = await page.evaluate(() => {
+      return document.querySelector('#testimonialsSection') !== null;
+    });
+    if (testimonialsSectionExists) {
+      console.log('TESTCASE:verify_testimonials_section_exists:success');
+    } else {
+      console.log('TESTCASE:verify_testimonials_section_exists:failure');
+    }
+  } catch {
+    console.log('TESTCASE:verify_testimonials_section_exists:failure');
+  }
+
+  // Test Case 2: Verify Testimonials Section Contains Multiple Testimonials
+  try {
+    const testimonialsExist = await page.evaluate(() => {
+      const testimonials = document.querySelectorAll('.testimonialDiv');
+      return testimonials.length >= 3;
+    });
+    if (testimonialsExist) {
+      console.log('TESTCASE:verify_multiple_testimonials:success');
+    } else {
+      console.log('TESTCASE:verify_multiple_testimonials:failure');
+    }
+  } catch {
+    console.log('TESTCASE:verify_multiple_testimonials:failure');
+  }
+
+  // Test Case 3: Verify Each Testimonial Contains Photo, Name, and Review
+  try {
+    const testimonialStructure = await page.evaluate(() => {
+      const testimonials = document.querySelectorAll('.testimonialDiv');
+      if (testimonials.length === 0) return false;
+      
+      let allValid = true;
+      testimonials.forEach(testimonial => {
+        const img = testimonial.querySelector('img');
+        const name = testimonial.querySelector('.customerName');
+        const review = testimonial.querySelector('.customerReview');
+        
+        if (!img || !name || !review) {
+          allValid = false;
+        }
+      });
+      return allValid;
+    });
+    if (testimonialStructure) {
+      console.log('TESTCASE:verify_testimonial_structure:success');
+    } else {
+      console.log('TESTCASE:verify_testimonial_structure:failure');
+    }
+  } catch {
+    console.log('TESTCASE:verify_testimonial_structure:failure');
+  }
+
+  // Test Case 4: Verify Flexbox Layout Is Used
+  try {
+    const flexboxUsed = await page.evaluate(() => {
+      const testimonialsSection = document.querySelector('#testimonialsSection');
+      const styles = window.getComputedStyle(testimonialsSection);
+      return styles.display === 'flex';
+    });
+    if (flexboxUsed) {
+      console.log('TESTCASE:verify_flexbox_layout:success');
+    } else {
+      console.log('TESTCASE:verify_flexbox_layout:failure');
+    }
+  } catch {
+    console.log('TESTCASE:verify_flexbox_layout:failure');
+  }
+
+  // Test Case 5: Verify Image Has Zoom Effect
+  try {
+    const imageZoomEffect = await page.evaluate(() => {
+      const img = document.querySelector('.testimonialDiv img');
+      const styles = window.getComputedStyle(img);
+      return styles.transition !== '';
+    });
+    if (imageZoomEffect) {
+      console.log('TESTCASE:verify_image_zoom:success');
+    } else {
+      console.log('TESTCASE:verify_image_zoom:failure');
+    }
+  } catch {
+    console.log('TESTCASE:verify_image_zoom:failure');
+  }
+
+  // Test Case 6: Verify Review Text Has Color Change Effect
+  try {
+    const textColorEffect = await page.evaluate(() => {
+      const review = document.querySelector('.customerReview');
+      const styles = window.getComputedStyle(review);
+      return styles.transition !== '';
+    });
+    if (textColorEffect) {
+      console.log('TESTCASE:verify_text_color_effect:success');
+    } else {
+      console.log('TESTCASE:verify_text_color_effect:failure');
+    }
+  } catch {
+    console.log('TESTCASE:verify_text_color_effect:failure');
+  }
+
+  // Test Case 7: Verify Horizontal Layout on Large Screens
+  try {
+    await page.setViewport({ width: 1024, height: 768 });
+    await page.waitForTimeout(500);
+    
+    const horizontalLayout = await page.evaluate(() => {
+      const testimonials = document.querySelectorAll('.testimonialDiv');
+      if (testimonials.length < 2) return false;
+      
+      const firstRect = testimonials[0].getBoundingClientRect();
+      const secondRect = testimonials[1].getBoundingClientRect();
+      
+      return Math.abs(firstRect.top - secondRect.top) < 50;
+    });
+    if (horizontalLayout) {
+      console.log('TESTCASE:verify_horizontal_layout:success');
+    } else {
+      console.log('TESTCASE:verify_horizontal_layout:failure');
+    }
+  } catch {
+    console.log('TESTCASE:verify_horizontal_layout:failure');
+  }
+
+  // Test Case 8: Verify Vertical Layout on Small Screens
+  try {
+    await page.setViewport({ width: 500, height: 768 });
+    await page.waitForTimeout(500);
+    
+    const verticalLayout = await page.evaluate(() => {
+      const testimonials = document.querySelectorAll('.testimonialDiv');
+      if (testimonials.length < 2) return false;
+      
+      const firstRect = testimonials[0].getBoundingClientRect();
+      const secondRect = testimonials[1].getBoundingClientRect();
+      
+      return secondRect.top > firstRect.bottom;
+    });
+    if (verticalLayout) {
+      console.log('TESTCASE:verify_vertical_layout:success');
+    } else {
+      console.log('TESTCASE:verify_vertical_layout:failure');
+    }
+  } catch {
+    console.log('TESTCASE:verify_vertical_layout:failure');
+  }
+
+  // Test Case 9: Verify Testimonials Have Spacing
+  try {
+    const spacingExists = await page.evaluate(() => {
+      const testimonialsSection = document.querySelector('#testimonialsSection');
+      const styles = window.getComputedStyle(testimonialsSection);
+      return styles.gap !== '0px';
+    });
+    if (spacingExists) {
+      console.log('TESTCASE:verify_spacing:success');
+    } else {
+      console.log('TESTCASE:verify_spacing:failure');
+    }
+  } catch {
+    console.log('TESTCASE:verify_spacing:failure');
+  }
+
+  // Test Case 10: Verify Customer Images Are Circular
+  try {
+    const circularImages = await page.evaluate(() => {
+      const img = document.querySelector('.testimonialDiv img');
+      const styles = window.getComputedStyle(img);
+      return styles.borderRadius === '50%';
+    });
+    if (circularImages) {
+      console.log('TESTCASE:verify_circular_images:success');
+    } else {
+      console.log('TESTCASE:verify_circular_images:failure');
+    }
+  } catch {
+    console.log('TESTCASE:verify_circular_images:failure');
+  }
+
+  await browser.close();
+})();
+=================== ./server.js ===================
+const express = require('express');
+const app = express();
+const port = 8081;
+
+app.use(express.static('public'))
+app.listen(port, () => console.log(`listening on port ${port}!`));

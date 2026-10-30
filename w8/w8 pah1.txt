@@ -1,0 +1,331 @@
+=================== ./package.json ===================
+{
+  "name": "webtest",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "rm -rf node_modules && npm i && node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "puppeteer": "^19.11.1",
+    "puppeteer-core": "^21.2.0"
+  }
+}
+
+=================== ./public/index.html ===================
+<!-- write you code here -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Layered Image Showcase</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="showcase">
+    <div class="buttons">
+      <button id="btn1" class="btn btn-primary">Image 1</button>
+      <button id="btn2" class="btn btn-success">Image 2</button>
+      <button id="btn3" class="btn btn-danger">Image 3</button>
+    </div>
+
+    <div class="image-container">
+      <img id="img1" class="layered-img" src="img1.jpg" alt="Image 1">
+      <img id="img2" class="layered-img" src="img2.jpg" alt="Image 2">
+      <img id="img3" class="layered-img" src="img3.jpg" alt="Image 3">
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
+=================== ./public/script.js ===================
+// write you Scripts here
+document.addEventListener('DOMContentLoaded', function () {
+    const img1 = document.getElementById('img1');
+    const img2 = document.getElementById('img2');
+    const img3 = document.getElementById('img3');
+  
+    const btn1 = document.getElementById('btn1');
+    const btn2 = document.getElementById('btn2');
+    const btn3 = document.getElementById('btn3');
+  
+    function bringToFront(image) {
+      img1.style.zIndex = '1';
+      img2.style.zIndex = '1';
+      img3.style.zIndex = '1';
+      image.style.zIndex = '10';
+    }
+  
+    btn1.addEventListener('click', function () {
+      bringToFront(img1);
+    });
+  
+    btn2.addEventListener('click', function () {
+      bringToFront(img2);
+    });
+  
+    btn3.addEventListener('click', function () {
+      bringToFront(img3);
+    });
+  });
+=================== ./public/style.css ===================
+/* write you stylings here */
+body {
+    margin: 0;
+    padding: 30px 0;
+    font-family: Arial, sans-serif;
+    background: #fff;
+    text-align: center;
+  }
+  
+  .showcase {
+    width: 100%;
+  }
+  
+  .buttons {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin-bottom: 20px;
+  }
+  
+  .buttons button {
+    font-size: 12px;
+    padding: 5px 12px;
+  }
+  
+  .image-container {
+    position: relative;
+    width: 300px;
+    height: 400px;
+    margin: 0 auto;
+  }
+  
+  .layered-img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 300px;
+    height: 400px;
+    object-fit: cover;
+    border: 1px solid #ddd;
+  }
+  
+  #img1 {
+    z-index: 1;
+  }
+  
+  #img2 {
+    z-index: 2;
+  }
+  
+  #img3 {
+    z-index: 3;
+  }
+  
+  @media (max-width: 600px) {
+    .image-container {
+      width: 250px;
+      height: 333px;
+    }
+  
+    .layered-img {
+      width: 250px;
+      height: 333px;
+    }
+  }
+=================== ./puppeteer/test.js ===================
+const puppeteer = require('puppeteer');
+
+(async () => {
+  const browser = await puppeteer.launch({
+    headless: false,
+    args: ['--headless', '--disable-gpu', '--remote-debugging-port=9222', '--no-sandbox', '--disable-setuid-sandbox']
+  });
+
+  const page = await browser.newPage();
+  const url = 'https://8081-workspace.examly.io'; 
+
+  try {
+    await page.goto(url, { waitUntil: 'domcontentloaded' });
+    await page.waitForSelector('#img1');
+    await page.waitForSelector('#img2');
+    await page.waitForSelector('#img3');
+  } catch {
+    console.log('TESTCASE:page_load:failure');
+    await browser.close();
+    return;
+  }
+
+  // Test 1: Initial overlap and z-index
+  try {
+    const zIndexes = await page.evaluate(() => {
+      return {
+        img1: document.getElementById('img1').style.zIndex || window.getComputedStyle(document.getElementById('img1')).zIndex,
+        img2: document.getElementById('img2').style.zIndex || window.getComputedStyle(document.getElementById('img2')).zIndex,
+        img3: document.getElementById('img3').style.zIndex || window.getComputedStyle(document.getElementById('img3')).zIndex,
+      };
+    });
+
+    console.log(zIndexes.img1 === '1' && zIndexes.img2 === '2' && zIndexes.img3 === '3'
+      ? 'TESTCASE:initial_zindex_and_overlap:success'
+      : 'TESTCASE:initial_zindex_and_overlap:failure');
+  } catch {
+    console.log('TESTCASE:initial_zindex_and_overlap:failure');
+  }
+
+  // Test 2: Clicking Button 1 brings Image 1 to front
+  try {
+    await page.click('#btn1');
+    await page.waitForTimeout(100);  // Allow DOM to update
+
+    const zIndexes = await page.evaluate(() => ({
+      img1: document.getElementById('img1').style.zIndex,
+      img2: document.getElementById('img2').style.zIndex,
+      img3: document.getElementById('img3').style.zIndex,
+    }));
+
+    console.log(zIndexes.img1 === '10' && zIndexes.img2 === '1' && zIndexes.img3 === '1'
+      ? 'TESTCASE:button1_brings_img1_front:success'
+      : 'TESTCASE:button1_brings_img1_front:failure');
+  } catch {
+    console.log('TESTCASE:button1_brings_img1_front:failure');
+  }
+
+  // Test 3: Clicking Button 2 brings Image 2 to front
+  try {
+    await page.click('#btn2');
+    await page.waitForTimeout(100);  // Allow DOM to update
+
+    const zIndexes = await page.evaluate(() => ({
+      img1: document.getElementById('img1').style.zIndex,
+      img2: document.getElementById('img2').style.zIndex,
+      img3: document.getElementById('img3').style.zIndex,
+    }));
+
+    console.log(zIndexes.img2 === '10' && zIndexes.img1 === '1' && zIndexes.img3 === '1'
+      ? 'TESTCASE:button2_brings_img2_front:success'
+      : 'TESTCASE:button2_brings_img2_front:failure');
+  } catch {
+    console.log('TESTCASE:button2_brings_img2_front:failure');
+  }
+
+  // Test 4: Clicking Button 3 brings Image 3 to front
+  try {
+    await page.click('#btn3');
+    await page.waitForTimeout(100);  // Allow DOM to update
+
+    const zIndexes = await page.evaluate(() => ({
+      img1: document.getElementById('img1').style.zIndex,
+      img2: document.getElementById('img2').style.zIndex,
+      img3: document.getElementById('img3').style.zIndex,
+    }));
+
+    console.log(zIndexes.img3 === '10' && zIndexes.img1 === '1' && zIndexes.img2 === '1'
+      ? 'TESTCASE:button3_brings_img3_front:success'
+      : 'TESTCASE:button3_brings_img3_front:failure');
+  } catch {
+    console.log('TESTCASE:button3_brings_img3_front:failure');
+  }
+
+  // Test 5: Z-index updates dynamically (img3=10, others=1)
+  try {
+    const zDynamic = await page.evaluate(() => {
+      const z1 = document.getElementById('img1').style.zIndex;
+      const z2 = document.getElementById('img2').style.zIndex;
+      const z3 = document.getElementById('img3').style.zIndex;
+      return z3 === '10' && z1 === '1' && z2 === '1';
+    });
+
+    console.log(zDynamic
+      ? 'TESTCASE:zindex_updates_dynamically:success'
+      : 'TESTCASE:zindex_updates_dynamically:failure');
+  } catch {
+    console.log('TESTCASE:zindex_updates_dynamically:failure');
+  }
+
+  // Test 6: Buttons remain responsive after multiple clicks
+  try {
+    let responsive = true;
+    for (let i = 0; i < 3; i++) {
+      await page.click('#btn1');
+      let z1 = await page.$eval('#img1', el => el.style.zIndex);
+      if (z1 !== '10') responsive = false;
+
+      await page.click('#btn2');
+      let z2 = await page.$eval('#img2', el => el.style.zIndex);
+      if (z2 !== '10') responsive = false;
+
+      await page.click('#btn3');
+      let z3 = await page.$eval('#img3', el => el.style.zIndex);
+      if (z3 !== '10') responsive = false;
+    }
+
+    console.log(responsive
+      ? 'TESTCASE:buttons_remain_responsive:success'
+      : 'TESTCASE:buttons_remain_responsive:failure');
+  } catch {
+    console.log('TESTCASE:buttons_remain_responsive:failure');
+  }
+
+  // Test 7: No console errors on button click
+  try {
+    const errorPage = await browser.newPage();
+    const logs = [];
+
+    errorPage.on('console', msg => {
+      if (msg.type() === 'error') logs.push(msg.text());
+    });
+
+    await errorPage.goto(url, { waitUntil: 'domcontentloaded' });
+    await errorPage.click('#btn1');
+    await errorPage.click('#btn2');
+    await errorPage.click('#btn3');
+
+    console.log(logs.length === 0
+      ? 'TESTCASE:no_console_errors_on_click:success'
+      : 'TESTCASE:no_console_errors_on_click:failure');
+
+    await errorPage.close();
+  } catch {
+    console.log('TESTCASE:no_console_errors_on_click:failure');
+  }
+
+  // Test 8: Only the selected image is brought to front
+  try {
+    await page.click('#btn2');
+    await page.waitForTimeout(100);  // Allow DOM to update
+    const z = await page.evaluate(() => ({
+      img1: document.getElementById('img1').style.zIndex,
+      img2: document.getElementById('img2').style.zIndex,
+      img3: document.getElementById('img3').style.zIndex
+    }));
+
+    const onlyOneFront = z.img2 === '10' && z.img1 === '1' && z.img3 === '1';
+
+    console.log(onlyOneFront
+      ? 'TESTCASE:only_selected_image_in_front:success'
+      : 'TESTCASE:only_selected_image_in_front:failure');
+  } catch {
+    console.log('TESTCASE:only_selected_image_in_front:failure');
+  }
+
+  await browser.close();
+})();
+
+=================== ./server.js ===================
+const express = require('express');
+const app = express();
+const port = 8081;
+
+app.use(express.static('public'))
+app.listen(port, () => console.log(`listening on port ${port}!`));

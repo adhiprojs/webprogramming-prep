@@ -1,0 +1,43 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+header {
+    background-color: #333333;
+    color: #ffffff;
+    padding: 16px;
+}
+
+nav a {
+    color: #ffffff;
+    margin-right: 15px;
+    text-decoration: none;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.section-title {
+    border-bottom: 2px solid #333333;
+}
+
+.item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+}
+
+.price {
+    font-weight: bold;
+}
+
+footer {
+    background-color: #333333;
+    color: #ffffff;
+    text-align: center;
+    padding: 10px;
+}

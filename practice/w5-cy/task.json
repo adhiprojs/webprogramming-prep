@@ -1,0 +1,17 @@
+{
+  "name": "w5-cy",
+  "week": "w5",
+  "kind": "cy",
+  "number": 1,
+  "type": "puppeteer",
+  "title": "Event Page with Flexbox Layout",
+  "starterKind": "blank",
+  "editable": [
+    "public/index.html",
+    "public/styles.css"
+  ],
+  "test": "puppeteer/test.js",
+  "testCount": 10,
+  "starterPasses": 0,
+  "runTotal": 10
+}

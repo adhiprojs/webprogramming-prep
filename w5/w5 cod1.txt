@@ -1,0 +1,271 @@
+=================== ./appdb/admin/system.version.metadata.json ===================
+{"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_"}],"uuid":"78ab081d81b145daaff31bade70d6fe3","collectionName":"system.version","type":"collection"}
+=================== ./appdb/prelude.json ===================
+{"ServerVersion":"6.0.29","ToolVersion":"100.17.0"}
+=================== ./package.json ===================
+{
+  "name": "webtest",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "rm -rf node_modules && npm i && node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "puppeteer": "^19.11.1",
+    "puppeteer-core": "^21.2.0"
+  }
+}
+
+=================== ./public/index.html ===================
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Document</title>
+</head>
+<body>
+    <header>
+        <h1>Divakar</h1>
+    </header>
+    <article>
+        <h2>About Me</h2>
+        <p>Hello I am Divakar, a passionate web developer and technology enthusiast. I enjoy creating well-structured and accessible web pages using modern HTML5 and CSS techniques. I believe in continuous learning and improving my skills to stay updated with the lasted trends in web development.</p>
+    </article>
+    <h2>My Hobbies</h2>
+    <ul>
+        <li>Reading books on technology and programming</li>
+        <li>Playing  cricket on weekends with friends</li>
+        <li>Exploring new web design trends and frameworks</li>
+        <li>Travelling to new places and experiences different cultures</li>
+        <li>Photography and capturing beauting moments</li>
+    </ul>
+    <footer>
+        <h2>Contact Information</h2>
+        <p>Email: divakar@example.com</p>
+        <p>Phone: +91 9876543210</p>
+    </footer>
+</body>
+</html>
+
+=================== ./public/styles.css ===================
+body{
+    font-family: Arial,sans-serif;
+    margin:0;
+    padding:0;
+}
+header{
+    padding: 20px;
+    font-size:24px;
+}
+article{
+    padding: 20px;
+    margin: 20px;
+}
+section{
+    padding: 20px;
+}
+ul{
+    padding-left: 30px;
+}
+footer{
+    padding:20px;
+    margin:20px;
+}
+=================== ./puppeteer/test.js ===================
+const puppeteer = require('puppeteer');
+
+(async () => {
+  const browser = await puppeteer.launch({
+    headless: false,
+    args: ['--headless', '--disable-gpu', '--remote-debugging-port=9222', '--no-sandbox', '--disable-setuid-sandbox']
+  });
+
+  const url = 'https://8081-workspace.examly.io'; // Update with your local file path
+  const page = await browser.newPage();
+
+  // Test Case 1: Verify Header Element Exists
+  try {
+    await page.goto(url);
+    const headerExists = await page.evaluate(() => {
+      return document.querySelector('header') !== null;
+    });
+    if (headerExists) {
+      console.log('TESTCASE:verify_header_exists:success');
+    } else {
+      console.log('TESTCASE:verify_header_exists:failure');
+    }
+  } catch {
+    console.log('TESTCASE:verify_header_exists:failure');
+  }
+
+  // Test Case 2: Verify H1 Element in Header
+  try {
+    const h1Exists = await page.evaluate(() => {
+      const h1 = document.querySelector('header h1');
+      return h1 !== null && h1.innerText.length > 0;
+    });
+    if (h1Exists) {
+      console.log('TESTCASE:verify_header_h1:success');
+    } else {
+      console.log('TESTCASE:verify_header_h1:failure');
+    }
+  } catch {
+    console.log('TESTCASE:verify_header_h1:failure');
+  }
+
+  // Test Case 3: Verify Article Element Exists
+  try {
+    const articleExists = await page.evaluate(() => {
+      return document.querySelector('article') !== null;
+    });
+    if (articleExists) {
+      console.log('TESTCASE:verify_article_exists:success');
+    } else {
+      console.log('TESTCASE:verify_article_exists:failure');
+    }
+  } catch {
+    console.log('TESTCASE:verify_article_exists:failure');
+  }
+
+  // Test Case 4: Verify Paragraph in Article
+  try {
+    const paragraphExists = await page.evaluate(() => {
+      const paragraph = document.querySelector('article p');
+      return paragraph !== null && paragraph.innerText.length > 0;
+    });
+    if (paragraphExists) {
+      console.log('TESTCASE:verify_article_paragraph:success');
+    } else {
+      console.log('TESTCASE:verify_article_paragraph:failure');
+    }
+  } catch {
+    console.log('TESTCASE:verify_article_paragraph:failure');
+  }
+
+  // Test Case 5: Verify UL Element Exists
+  try {
+    const ulExists = await page.evaluate(() => {
+      return document.querySelector('ul') !== null;
+    });
+    if (ulExists) {
+      console.log('TESTCASE:verify_ul_exists:success');
+    } else {
+      console.log('TESTCASE:verify_ul_exists:failure');
+    }
+  } catch {
+    console.log('TESTCASE:verify_ul_exists:failure');
+  }
+
+  // Test Case 6: Verify Multiple LI Elements in UL
+  try {
+    const liCount = await page.evaluate(() => {
+      const listItems = document.querySelectorAll('ul li');
+      return listItems.length;
+    });
+    if (liCount >= 3) {
+      console.log('TESTCASE:verify_multiple_li_elements:success');
+    } else {
+      console.log('TESTCASE:verify_multiple_li_elements:failure');
+    }
+  } catch {
+    console.log('TESTCASE:verify_multiple_li_elements:failure');
+  }
+
+  // Test Case 7: Verify LI Elements Have Content
+  try {
+    const liHasContent = await page.evaluate(() => {
+      const listItems = document.querySelectorAll('ul li');
+      let allHaveContent = true;
+      listItems.forEach(item => {
+        if (item.innerText.trim().length === 0) {
+          allHaveContent = false;
+        }
+      });
+      return allHaveContent && listItems.length > 0;
+    });
+    if (liHasContent) {
+      console.log('TESTCASE:verify_li_content:success');
+    } else {
+      console.log('TESTCASE:verify_li_content:failure');
+    }
+  } catch {
+    console.log('TESTCASE:verify_li_content:failure');
+  }
+
+  // Test Case 8: Verify Footer Element Exists
+  try {
+    const footerExists = await page.evaluate(() => {
+      return document.querySelector('footer') !== null;
+    });
+    if (footerExists) {
+      console.log('TESTCASE:verify_footer_exists:success');
+    } else {
+      console.log('TESTCASE:verify_footer_exists:failure');
+    }
+  } catch {
+    console.log('TESTCASE:verify_footer_exists:failure');
+  }
+
+  // Test Case 9: Verify Footer Has Contact Information
+  try {
+    const footerHasContact = await page.evaluate(() => {
+      const footer = document.querySelector('footer');
+      return footer !== null && footer.innerText.length > 0;
+    });
+    if (footerHasContact) {
+      console.log('TESTCASE:verify_footer_contact_info:success');
+    } else {
+      console.log('TESTCASE:verify_footer_contact_info:failure');
+    }
+  } catch {
+    console.log('TESTCASE:verify_footer_contact_info:failure');
+  }
+
+  // Test Case 10: Verify CSS Styling Applied (Check for margin/padding)
+  try {
+    const stylingApplied = await page.evaluate(() => {
+      const header = document.querySelector('header');
+      const article = document.querySelector('article');
+      const footer = document.querySelector('footer');
+      
+      const headerStyles = window.getComputedStyle(header);
+      const articleStyles = window.getComputedStyle(article);
+      const footerStyles = window.getComputedStyle(footer);
+      
+      const hasPadding = 
+        parseInt(headerStyles.padding) > 0 ||
+        parseInt(articleStyles.padding) > 0 ||
+        parseInt(footerStyles.padding) > 0;
+        
+      const hasMargin = 
+        parseInt(articleStyles.margin) > 0 ||
+        parseInt(footerStyles.margin) > 0;
+      
+      return hasPadding && hasMargin;
+    });
+    
+    if (stylingApplied) {
+      console.log('TESTCASE:verify_css_styling:success');
+    } else {
+      console.log('TESTCASE:verify_css_styling:failure');
+    }
+  } catch {
+    console.log('TESTCASE:verify_css_styling:failure');
+  }
+
+  await browser.close();
+})();
+=================== ./server.js ===================
+const express = require('express');
+const app = express();
+const port = 8081;
+
+app.use(express.static('public'))
+app.listen(port, () => console.log(`listening on port ${port}!`));

@@ -1,0 +1,21 @@
+{
+  "name": "w11-cy1",
+  "week": "w11",
+  "kind": "cy",
+  "number": 1,
+  "type": "react",
+  "title": "Navbar and Marks Pages (React)",
+  "starterKind": "blank",
+  "editable": [
+    "reactapp/src/App.js",
+    "reactapp/src/components/Marks.jsx",
+    "reactapp/src/components/Navbar.jsx",
+    "reactapp/src/App.css",
+    "reactapp/src/components/Marks.css",
+    "reactapp/src/components/Navbar.css"
+  ],
+  "test": "react/tests/App.test.js",
+  "testCount": 10,
+  "starterPasses": 0,
+  "runTotal": 10
+}

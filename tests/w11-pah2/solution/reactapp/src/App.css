@@ -1,0 +1,13 @@
+#app-container {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+  }
+  
+  #page-title {
+    color: #c0392b;
+    font-size: 28px;
+    margin-bottom: 24px;
+    text-align: center;
+  }

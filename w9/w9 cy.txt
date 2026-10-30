@@ -1,0 +1,285 @@
+=================== ./reactapp/package.json ===================
+{
+  "name": "react-app",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
+    "bootstrap": "^5.3.7",
+    "canvas": "^2.11.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-hook-form": "^7.45.4",
+    "react-router-dom": "^6.22.3",
+    "react-scripts": "5.0.1",
+    "sweetalert2": "^11.7.27",
+    "web-vitals": "^2.1.4"
+  },
+  "scripts": {
+    "start": "BROWSER=none PORT=8081 react-scripts start --disable-host-check --host 0.0.0.0",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
+
+=================== ./reactapp/public/index.html ===================
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta
+      name="description"
+      content="Web site created using create-react-app"
+    />
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <!--
+      manifest.json provides metadata used when your web app is installed on a
+      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
+    -->
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <!--
+      Notice the use of %PUBLIC_URL% in the tags above.
+      It will be replaced with the URL of the `public` folder during the build.
+      Only files inside the `public` folder can be referenced from the HTML.
+
+      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
+      work correctly both with client-side routing and a non-root public URL.
+      Learn how to configure a non-root public URL by running `npm run build`.
+    -->
+    <title>React App</title>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+    <!--
+      This HTML file is a template.
+      If you open it directly in the browser, you will see an empty page.
+
+      You can add webfonts, meta tags, or analytics to this file.
+      The build step will place the bundled scripts into the <body> tag.
+
+      To begin the development, run `npm start` or `yarn start`.
+      To create a production bundle, use `npm run build` or `yarn build`.
+    -->
+  </body>
+</html>
+
+=================== ./reactapp/public/manifest.json ===================
+{
+  "short_name": "React App",
+  "name": "Create React App Sample",
+  "icons": [
+    {
+      "src": "favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "logo192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "logo512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff"
+}
+
+=================== ./reactapp/src/App.css ===================
+
+=================== ./reactapp/src/App.js ===================
+
+=================== ./reactapp/src/components/MusicStore.jsx ===================
+
+=================== ./reactapp/src/index.css ===================
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+=================== ./reactapp/src/index.js ===================
+import React from 'react';
+import ReactDOM from 'react-dom';
+import App from './App';
+
+ReactDOM.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
+  document.getElementById('root')
+);
+=================== ./reactapp/src/reportWebVitals.js ===================
+const reportWebVitals = onPerfEntry => {
+  if (onPerfEntry && onPerfEntry instanceof Function) {
+    import('web-vitals').then(({ getCLS, getFID, getFCP, getLCP, getTTFB }) => {
+      getCLS(onPerfEntry);
+      getFID(onPerfEntry);
+      getFCP(onPerfEntry);
+      getLCP(onPerfEntry);
+      getTTFB(onPerfEntry);
+    });
+  }
+};
+
+export default reportWebVitals;
+
+=================== ./reactapp/src/setupTests.js ===================
+// jest-dom adds custom jest matchers for asserting on DOM nodes.
+// allows you to do things like:
+// expect(element).toHaveTextContent(/react/i)
+// learn more: https://github.com/testing-library/jest-dom
+import '@testing-library/jest-dom';
+
+=================== ./react/tests/App.test.js ===================
+import React from 'react';
+import { render, fireEvent, screen, waitFor } from '@testing-library/react';
+import '@testing-library/jest-dom';
+import MusicStore from '../components/MusicStore';
+
+// Mocking window.alert
+beforeAll(() => {
+  global.alert = jest.fn();
+});
+
+afterEach(() => {
+  jest.clearAllMocks();
+});
+
+afterAll(() => {
+  global.alert.mockRestore();
+});
+
+// Test 1: Check if main heading is rendered
+test('renders_MusicStore_heading_is_present', () => {
+  render(<MusicStore />);
+  expect(screen.getByText('Music Store Inventory')).toBeInTheDocument();
+});
+
+// Test 2: Check if initial inventory items are displayed
+test('displays_initial_inventory_items_are_present', () => {
+  render(<MusicStore />);
+  expect(screen.getByText('Acoustic Guitar')).toBeInTheDocument();
+  expect(screen.getByText('Electric Keyboard')).toBeInTheDocument();
+  expect(screen.getByText('Drum Set')).toBeInTheDocument();
+});
+
+// Test 3: Check alert when trying to add item with empty fields
+test('displays_alert_if_fields_are_empty_when_adding_new_item', async () => {
+  render(<MusicStore />);
+  fireEvent.click(screen.getByText('Add Item'));
+  await waitFor(() => {
+    expect(global.alert).toHaveBeenCalledWith('Please fill in all fields');
+  });
+});
+
+// Test 4: Add a new item successfully
+test('adds_a_new_item_successfully', () => {
+  render(<MusicStore />);
+
+  // Fill in the form fields
+  fireEvent.change(screen.getByPlaceholderText('Instrument / Album Name'), { target: { value: 'Violin' } });
+  fireEvent.change(screen.getByPlaceholderText('Quantity'), { target: { value: '8' } });
+  fireEvent.change(screen.getByPlaceholderText('Price ($)'), { target: { value: '200' } });
+
+  // Click add item button
+  fireEvent.click(screen.getByText('Add Item'));
+
+  // Verify the new item appears
+  expect(screen.getByText('Violin')).toBeInTheDocument();
+  expect(screen.getByText('8')).toBeInTheDocument();
+  expect(screen.getByText('$200.00')).toBeInTheDocument();
+});
+
+// Test 5: Check if Add Item button is rendered
+test('renders_Add_Item_button', () => {
+  render(<MusicStore />);
+  const addItemButton = screen.getByText('Add Item');
+  expect(addItemButton).toBeInTheDocument();
+});
+
+// Test 6: Bootstrap CSS classes are applied correctly
+test('bootstrap_classes_are_applied_correctly', () => {
+  const { container } = render(<MusicStore />);
+  
+  // ✅ Container
+  const containerDiv = container.querySelector('.container');
+  expect(containerDiv).toHaveClass('container', 'my-4');
+
+  // ✅ Table
+  const table = container.querySelector('.table');
+  expect(table).toHaveClass('table', 'table-bordered', 'table-hover', 'shadow-sm');
+
+  // ✅ Table header color
+  const thead = container.querySelector('.table-warning');
+  expect(thead).toBeInTheDocument();
+
+  // ✅ Button class
+  const button = screen.getByText('Add Item');
+  expect(button).toHaveClass('btn', 'btn-warning', 'w-100', 'fw-bold');
+});
+
+// Test 7: Form inputs are cleared after successfully adding an item
+test('form_inputs_are_cleared_after_adding_item', () => {
+  render(<MusicStore />);
+  
+  const nameInput = screen.getByPlaceholderText('Instrument / Album Name');
+  const quantityInput = screen.getByPlaceholderText('Quantity');
+  const priceInput = screen.getByPlaceholderText('Price ($)');
+  
+  fireEvent.change(nameInput, { target: { value: 'Flute' } });
+  fireEvent.change(quantityInput, { target: { value: '12' } });
+  fireEvent.change(priceInput, { target: { value: '50' } });
+  
+  // Verify before submit
+  expect(nameInput.value).toBe('Flute');
+  expect(quantityInput.value).toBe('12');
+  expect(priceInput.value).toBe('50');
+  
+  // Click add item button
+  fireEvent.click(screen.getByText('Add Item'));
+  
+  // Verify cleared after submit
+  expect(nameInput.value).toBe('');
+  expect(quantityInput.value).toBe('');
+  expect(priceInput.value).toBe('');
+});
+

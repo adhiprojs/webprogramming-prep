@@ -1,0 +1,382 @@
+=================== ./appdb/admin/system.version.metadata.json ===================
+{"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_"}],"uuid":"14471a2514544b33af04034ed19db17a","collectionName":"system.version","type":"collection"}
+=================== ./appdb/prelude.json ===================
+{"ServerVersion":"6.0.29","ToolVersion":"100.17.0"}
+=================== ./package.json ===================
+{
+  "name": "webtest",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "rm -rf node_modules && npm i && node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "puppeteer": "^19.11.1",
+    "puppeteer-core": "^21.2.0"
+  }
+}
+
+=================== ./public/index.html ===================
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Website Footer</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<main>
+  <h1>Welcome to Rachel's Website</h1>
+  <p>This is the main content area. Scroll down to view the footer.</p>
+</main>
+
+<footer>
+  <div class="social-media">
+    <a href="https://facebook.com" class="social-icon facebook" aria-label="Facebook">
+      <img src="facebook.png" alt="Facebook">
+    </a>
+    <a href="https://twitter.com" class="social-icon twitter" aria-label="Twitter">
+      <img src="twitter.png" alt="Twitter">
+    </a>
+    <a href="https://instagram.com" class="social-icon instagram" aria-label="Instagram">
+      <img src="instagram.png" alt="Instagram">
+    </a>
+    <a href="https://linkedin.com" class="social-icon linkedin" aria-label="LinkedIn">
+      <img src="linkedin.png" alt="LinkedIn">
+    </a>
+  </div>
+
+  <div class="footer-links">
+    <a href="/privacy-policy" class="footer-link">Privacy Policy</a>
+    <span class="separator">|</span>
+    <a href="/terms-of-service" class="footer-link">Terms of Service</a>
+  </div>
+
+  <p class="copyright">&copy; 2025 Rachel's Website. All rights reserved.</p>
+</footer>
+
+</body>
+</html>
+=================== ./public/styles.css ===================
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: Arial, Helvetica, sans-serif;
+  }
+  
+  main {
+    min-height: 60vh;
+    text-align: center;
+    padding: 40px 20px;
+  }
+  
+  footer {
+    background-color: #1a1a2e;
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 30px 20px;
+    gap: 15px;
+  }
+
+
+  .social-media {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+  }
+  
+  .social-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.1);
+    transition: background-color 0.3s ease, transform 0.3s ease, filter 0.3s ease;
+  }
+  
+  .social-icon img {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+    transition: filter 0.3s ease;
+  }
+  
+  .social-icon:hover {
+    transform: translateY(-3px);
+  }
+  
+  .social-icon.facebook:hover {
+    background-color: #1877f2;
+  }
+  
+  .social-icon.twitter:hover {
+    background-color: #1da1f2;
+  }
+  
+  .social-icon.instagram:hover {
+    background-color: #e4405f;
+  }
+  
+  .social-icon.linkedin:hover {
+    background-color: #0a66c2;
+  }
+  
+  
+  .footer-links {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+  
+  .footer-link {
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 14px;
+    transition: color 0.3s ease;
+  }
+  
+  .footer-link:hover {
+    color: #cccccc;
+    text-decoration: underline;
+  }
+  
+  .footer-links .separator {
+    color: #ffffff;
+  }
+  
+  
+  .copyright {
+    font-size: 13px;
+    color: #cccccc;
+  }
+  
+  
+  @media (max-width: 768px) {
+    .footer-links {
+      flex-direction: column;
+      gap: 8px;
+    }
+  
+    .footer-links .separator {
+      display: none;
+    }
+  
+    .social-icon {
+      width: 34px;
+      height: 34px;
+    }
+  
+    .social-icon img {
+      width: 16px;
+      height: 16px;
+    }
+  
+    .social-media {
+      gap: 15px;
+    }
+  }
+=================== ./puppeteer/test.js ===================
+const puppeteer = require('puppeteer');
+
+(async () => {
+  const browser = await puppeteer.launch({
+    headless: false,
+    args: ['--headless', '--disable-gpu', '--remote-debugging-port=9222', '--no-sandbox', '--disable-setuid-sandbox']
+  });
+
+  const url = 'https://8081-workspace.examly.io'; // Update with your local file path
+  const page = await browser.newPage();
+
+  // Test Case 1: Verify Footer Exists
+  try {
+    await page.goto(url);
+    const footerExists = await page.evaluate(() => {
+      return document.querySelector('footer') !== null;
+    });
+    if (footerExists) {
+      console.log('TESTCASE:verify_footer_exists:success');
+    } else {
+      console.log('TESTCASE:verify_footer_exists:failure');
+    }
+  } catch {
+    console.log('TESTCASE:verify_footer_exists:failure');
+  }
+
+  // Test Case 2: Verify Footer Contains All Required Elements
+  try {
+    const footerContentComplete = await page.evaluate(() => {
+      const socialMedia = document.querySelector('.social-media');
+      const footerLinks = document.querySelector('.footer-links');
+      const copyright = document.querySelector('.copyright');
+      
+      return socialMedia !== null && footerLinks !== null && copyright !== null;
+    });
+    if (footerContentComplete) {
+      console.log('TESTCASE:verify_footer_content:success');
+    } else {
+      console.log('TESTCASE:verify_footer_content:failure');
+    }
+  } catch {
+    console.log('TESTCASE:verify_footer_content:failure');
+  }
+
+  // Test Case 3: Verify Social Media Icons Exist
+  try {
+    const socialIconsExist = await page.evaluate(() => {
+      const icons = document.querySelectorAll('.social-icon');
+      return icons.length >= 3;
+    });
+    if (socialIconsExist) {
+      console.log('TESTCASE:verify_social_icons:success');
+    } else {
+      console.log('TESTCASE:verify_social_icons:failure');
+    }
+  } catch {
+    console.log('TESTCASE:verify_social_icons:failure');
+  }
+
+  // Test Case 4: Verify Social Media Icons Have Hover Effect
+  try {
+    const hoverEffectExists = await page.evaluate(() => {
+      const icon = document.querySelector('.social-icon');
+      const styles = window.getComputedStyle(icon);
+      return styles.transition !== '';
+    });
+    if (hoverEffectExists) {
+      console.log('TESTCASE:verify_icon_hover_effect:success');
+    } else {
+      console.log('TESTCASE:verify_icon_hover_effect:failure');
+    }
+  } catch {
+    console.log('TESTCASE:verify_icon_hover_effect:failure');
+  }
+
+  // Test Case 5: Verify Footer Links Exist
+  try {
+    const footerLinksExist = await page.evaluate(() => {
+      const links = document.querySelectorAll('.footer-links a');
+      return links.length >= 2;
+    });
+    if (footerLinksExist) {
+      console.log('TESTCASE:verify_footer_links:success');
+    } else {
+      console.log('TESTCASE:verify_footer_links:failure');
+    }
+  } catch {
+    console.log('TESTCASE:verify_footer_links:failure');
+  }
+
+  // Test Case 6: Verify Footer Links Are Functional
+  try {
+    const linksHaveHref = await page.evaluate(() => {
+      const links = document.querySelectorAll('.footer-links a');
+      let allHaveHref = true;
+      
+      links.forEach(link => {
+        if (!link.getAttribute('href')) {
+          allHaveHref = false;
+        }
+      });
+      
+      return allHaveHref && links.length >= 2;
+    });
+    if (linksHaveHref) {
+      console.log('TESTCASE:verify_links_functional:success');
+    } else {
+      console.log('TESTCASE:verify_links_functional:failure');
+    }
+  } catch {
+    console.log('TESTCASE:verify_links_functional:failure');
+  }
+
+  // Test Case 7: Verify Footer Has Dark Background
+  try {
+    const darkBackground = await page.evaluate(() => {
+      const footer = document.querySelector('footer');
+      const styles = window.getComputedStyle(footer);
+      return styles.backgroundColor !== 'rgba(0, 0, 0, 0)' && styles.backgroundColor !== 'transparent';
+    });
+    if (darkBackground) {
+      console.log('TESTCASE:verify_dark_background:success');
+    } else {
+      console.log('TESTCASE:verify_dark_background:failure');
+    }
+  } catch {
+    console.log('TESTCASE:verify_dark_background:failure');
+  }
+
+  // Test Case 8: Verify Footer Text Is White
+  try {
+    const whiteText = await page.evaluate(() => {
+      const footer = document.querySelector('footer');
+      const styles = window.getComputedStyle(footer);
+      return styles.color !== '';
+    });
+    if (whiteText) {
+      console.log('TESTCASE:verify_white_text:success');
+    } else {
+      console.log('TESTCASE:verify_white_text:failure');
+    }
+  } catch {
+    console.log('TESTCASE:verify_white_text:failure');
+  }
+
+  // Test Case 9: Verify Footer Content Is Centered
+  try {
+    const contentCentered = await page.evaluate(() => {
+      const footer = document.querySelector('footer');
+      const styles = window.getComputedStyle(footer);
+      return styles.textAlign === 'center';
+    });
+    if (contentCentered) {
+      console.log('TESTCASE:verify_content_centered:success');
+    } else {
+      console.log('TESTCASE:verify_content_centered:failure');
+    }
+  } catch {
+    console.log('TESTCASE:verify_content_centered:failure');
+  }
+
+  // Test Case 10: Verify Copyright Notice Exists
+  try {
+    const copyrightExists = await page.evaluate(() => {
+      const copyright = document.querySelector('.copyright');
+      return copyright !== null && copyright.innerText.length > 0;
+    });
+    if (copyrightExists) {
+      console.log('TESTCASE:verify_copyright_notice:success');
+    } else {
+      console.log('TESTCASE:verify_copyright_notice:failure');
+    }
+  } catch {
+    console.log('TESTCASE:verify_copyright_notice:failure');
+  }
+
+  await browser.close();
+})();
+=================== ./server.js ===================
+const express = require('express');
+const app = express();
+const port = 8081;
+
+app.use(express.static('public'))
+app.listen(port, () => console.log(`listening on port ${port}!`));

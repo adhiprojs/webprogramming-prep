@@ -1,0 +1,17 @@
+{
+  "name": "w2-pah2",
+  "week": "w2",
+  "kind": "pah",
+  "number": 2,
+  "type": "puppeteer",
+  "title": "E-Commerce Product Catalog",
+  "starterKind": "template",
+  "editable": [
+    "public/index.html",
+    "public/style.css"
+  ],
+  "test": "puppeteer/test.js",
+  "testCount": 10,
+  "starterPasses": 0,
+  "runTotal": 10
+}

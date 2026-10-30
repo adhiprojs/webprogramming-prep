@@ -1,0 +1,17 @@
+{
+  "name": "w1-cy1",
+  "week": "w1",
+  "kind": "cy",
+  "number": 1,
+  "type": "puppeteer",
+  "title": "The Reading Nook Bookstore Page",
+  "starterKind": "template",
+  "editable": [
+    "public/index.html",
+    "public/style.css"
+  ],
+  "test": "puppeteer/test.js",
+  "testCount": 11,
+  "starterPasses": 0,
+  "runTotal": 11
+}

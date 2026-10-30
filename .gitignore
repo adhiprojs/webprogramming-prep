@@ -1,0 +1,12 @@
+# Installed by setup.sh / setup.cmd
+runtime/node14/
+node_modules/
+
+# Scratch dirs made while tests or the React preview run
+runtime/*/.run-*
+runtime/*/.preview-*
+ide/.tmp/
+
+# Each person's own practice answers and last results
+practice/*/answer/
+practice/*/last-run.json

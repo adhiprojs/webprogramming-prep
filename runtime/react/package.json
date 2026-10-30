@@ -1,0 +1,48 @@
+{
+  "name": "reactapp",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Shared runtime for all React-graded tests: union of the dependency lists from the w8-w11 exam package.json files",
+  "dependencies": {
+    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
+    "ajv": "^8.17.1",
+    "axios": "^1.6.3",
+    "bootstrap": "^5.3.7",
+    "canvas": "^2.11.2",
+    "history": "^5.3.0",
+    "jest": "^27.5.1",
+    "msw": "^1.2.4",
+    "node-fetch": "^3.3.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-hook-form": "^7.45.4",
+    "react-router-dom": "^6.22.3",
+    "react-scripts": "5.0.1",
+    "supertest": "^6.3.3",
+    "sweetalert2": "^11.7.27",
+    "web-vitals": "^2.1.4"
+  },
+  "devDependencies": {
+    "jest-fetch-mock": "^3.0.3"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

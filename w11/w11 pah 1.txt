@@ -1,0 +1,454 @@
+=================== ./appdb/admin/system.version.metadata.json ===================
+{"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_"}],"uuid":"3e9dc4be296d49fe99737172e1d8cfe1","collectionName":"system.version","type":"collection"}
+=================== ./appdb/prelude.json ===================
+{"ServerVersion":"6.0.29","ToolVersion":"100.17.0"}
+=================== ./reactapp/package.json ===================
+{
+  "name": "reactapp",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
+    "canvas": "^2.11.2",
+    "history": "^5.3.0",
+    "msw": "^1.2.4",
+    "node-fetch": "^3.3.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.15.0",
+    "react-scripts": "5.0.1",
+    "supertest": "^6.3.3",
+    "web-vitals": "^2.1.4"
+  },
+  "devDependencies": {
+    "jest-fetch-mock": "^3.0.3"
+  },
+  "scripts": {
+    "start": "BROWSER=none PORT=8081 react-scripts start --disable-host-check --host 0.0.0.0",
+    "build": "react-scripts build",
+    "test": "react-scripts test --watchAll=false",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
+=================== ./reactapp/public/index.html ===================
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta
+      name="description"
+      content="Web site created using create-react-app"
+    />
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <!--
+      manifest.json provides metadata used when your web app is installed on a
+      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
+    -->
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <!--
+      Notice the use of %PUBLIC_URL% in the tags above.
+      It will be replaced with the URL of the `public` folder during the build.
+      Only files inside the `public` folder can be referenced from the HTML.
+
+      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
+      work correctly both with client-side routing and a non-root public URL.
+      Learn how to configure a non-root public URL by running `npm run build`.
+    -->
+    <title>React App</title>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+    <!--
+      This HTML file is a template.
+      If you open it directly in the browser, you will see an empty page.
+
+      You can add webfonts, meta tags, or analytics to this file.
+      The build step will place the bundled scripts into the <body> tag.
+
+      To begin the development, run `npm start` or `yarn start`.
+      To create a production bundle, use `npm run build` or `yarn build`.
+    -->
+  </body>
+</html>
+
+=================== ./reactapp/public/manifest.json ===================
+{
+  "short_name": "React App",
+  "name": "Create React App Sample",
+  "icons": [
+    {
+      "src": "favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "logo192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "logo512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff"
+}
+
+=================== ./reactapp/src/App.css ===================
+#app-container {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+#directory-title {
+  color: #2c3e50;
+  font-size: 28px;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+#department-filter {
+  display: block;
+  margin: 0 auto 24px auto;
+  padding: 8px 16px;
+  font-size: 16px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+=================== ./reactapp/src/App.js ===================
+import React, { useState } from "react";
+import EmployeeCard from "./components/EmployeeCard";
+import "./App.css";
+
+function App() {
+  const [selectedDepartment, setSelectedDepartment] = useState("All");
+
+  const employees = [
+    {
+      id: 1,
+      employeeName: "Rajan Kumar",
+      role: "Software Engineer",
+      department: "Engineering",
+    },
+    {
+      id: 2,
+      employeeName: "Meena Iyer",
+      role: "Product Manager",
+      department: "Product",
+    },
+    {
+      id: 3,
+      employeeName: "Karthik Raj",
+      role: "UI Designer",
+      department: "Design",
+    },
+    {
+      id: 4,
+      employeeName: "Sneha Pillai",
+      role: "QA Engineer",
+      department: "Engineering",
+    },
+    {
+      id: 5,
+      employeeName: "Divya Nair",
+      role: "Data Analyst",
+      department: "Product",
+    },
+  ];
+
+  const filteredEmployees =
+    selectedDepartment === "All"
+      ? employees
+      : employees.filter(
+          (employee) =>
+            employee.department === selectedDepartment
+        );
+
+  const handleDepartmentChange = (event) => {
+    setSelectedDepartment(event.target.value);
+  };
+
+  return (
+    <div id="app-container">
+      <h1 id="directory-title">Employee Directory</h1>
+
+      <select
+        id="department-filter"
+        value={selectedDepartment}
+        onChange={handleDepartmentChange}
+      >
+        <option value="All">All</option>
+        <option value="Engineering">Engineering</option>
+        <option value="Product">Product</option>
+        <option value="Design">Design</option>
+      </select>
+
+      <div id="employee-list">
+        {filteredEmployees.map((employee) => (
+          <EmployeeCard
+            key={employee.id}
+            employeeName={employee.employeeName}
+            role={employee.role}
+            department={employee.department}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export default App;
+=================== ./reactapp/src/components/EmployeeCard.css ===================
+.employee-card {
+  background: white;
+  border: 2px solid #2980b9;
+  border-radius: 10px;
+  padding: 20px;
+  margin: 12px;
+  max-width: 280px;
+  display: inline-block;
+  vertical-align: top;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.employee-name {
+  color: #2980b9;
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.employee-role {
+  color: #555;
+  font-size: 15px;
+  margin-bottom: 6px;
+}
+
+.employee-department {
+  color: #27ae60;
+  font-size: 15px;
+  font-weight: bold;
+}
+=================== ./reactapp/src/components/EmployeeCard.jsx ===================
+import React from "react";
+import PropTypes from "prop-types";
+import "./EmployeeCard.css";
+
+function EmployeeCard({ employeeName, role, department }) {
+  return (
+    <div className="employee-card">
+      <h2 className="employee-name">{employeeName}</h2>
+      <p className="employee-role">Role: {role}</p>
+      <p className="employee-department">
+        Department: {department}
+      </p>
+    </div>
+  );
+}
+
+EmployeeCard.propTypes = {
+  employeeName: PropTypes.string.isRequired,
+  role: PropTypes.string.isRequired,
+  department: PropTypes.string.isRequired,
+};
+
+export default EmployeeCard;
+=================== ./reactapp/src/index.css ===================
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+=================== ./reactapp/src/index.js ===================
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import './index.css';
+import App from './App';
+import reportWebVitals from './reportWebVitals';
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
+
+// If you want to start measuring performance in your app, pass a function
+// to log results (for example: reportWebVitals(console.log))
+// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
+reportWebVitals();
+
+=================== ./reactapp/src/reportWebVitals.js ===================
+const reportWebVitals = onPerfEntry => {
+  if (onPerfEntry && onPerfEntry instanceof Function) {
+    import('web-vitals').then(({ getCLS, getFID, getFCP, getLCP, getTTFB }) => {
+      getCLS(onPerfEntry);
+      getFID(onPerfEntry);
+      getFCP(onPerfEntry);
+      getLCP(onPerfEntry);
+      getTTFB(onPerfEntry);
+    });
+  }
+};
+
+export default reportWebVitals;
+
+=================== ./reactapp/src/setupTests.js ===================
+// jest-dom adds custom jest matchers for asserting on DOM nodes.
+// allows you to do things like:
+// expect(element).toHaveTextContent(/react/i)
+// learn more: https://github.com/testing-library/jest-dom
+import '@testing-library/jest-dom';
+
+=================== ./reactapp/src/tests/App.test.js ===================
+import React from 'react';
+import { render, screen, fireEvent } from '@testing-library/react';
+import "@testing-library/jest-dom";
+import App from '../App';
+import EmployeeCard from '../components/EmployeeCard';
+
+describe("App", () => {
+  test("renders_directory_title", () => {
+    render(<App />);
+    expect(screen.getByText("Employee Directory")).toBeInTheDocument();
+  });
+
+  test("renders_department_filter_dropdown", () => {
+    render(<App />);
+    const dropdown = document.querySelector('#department-filter');
+    expect(dropdown).toBeInTheDocument();
+  });
+
+  test("renders_all_employees_on_load", () => {
+    render(<App />);
+    const cards = document.querySelectorAll('.employee-card');
+    expect(cards.length).toBe(5);
+  });
+
+  test("filters_employees_by_department", () => {
+    render(<App />);
+    const dropdown = document.querySelector('#department-filter');
+    fireEvent.change(dropdown, { target: { value: 'Engineering' } });
+    const cards = document.querySelectorAll('.employee-card');
+    expect(cards.length).toBe(2);
+  });
+});
+
+describe("EmployeeCard", () => {
+  test("renders_employee_name", () => {
+    render(<EmployeeCard employeeName="Rajan Kumar" role="Software Engineer" department="Engineering" />);
+    expect(screen.getByText("Rajan Kumar")).toBeInTheDocument();
+  });
+
+  test("renders_employee_role", () => {
+    render(<EmployeeCard employeeName="Rajan Kumar" role="Software Engineer" department="Engineering" />);
+    expect(screen.getByText("Role: Software Engineer")).toBeInTheDocument();
+  });
+
+  test("renders_employee_department", () => {
+    render(<EmployeeCard employeeName="Rajan Kumar" role="Software Engineer" department="Engineering" />);
+    expect(screen.getByText("Department: Engineering")).toBeInTheDocument();
+  });
+
+  test("validates_proptypes", () => {
+    const { propTypes } = EmployeeCard;
+    expect(propTypes).toHaveProperty("employeeName");
+    expect(propTypes).toHaveProperty("role");
+    expect(propTypes).toHaveProperty("department");
+  });
+});
+=================== ./react/tests/App.test.js ===================
+import React from 'react';
+import { render, screen, fireEvent } from '@testing-library/react';
+import "@testing-library/jest-dom";
+import App from '../App';
+import EmployeeCard from '../components/EmployeeCard';
+
+describe("App", () => {
+  test("renders_directory_title", () => {
+    render(<App />);
+    expect(screen.getByText("Employee Directory")).toBeInTheDocument();
+  });
+
+  test("renders_department_filter_dropdown", () => {
+    render(<App />);
+    const dropdown = document.querySelector('#department-filter');
+    expect(dropdown).toBeInTheDocument();
+  });
+
+  test("renders_all_employees_on_load", () => {
+    render(<App />);
+    const cards = document.querySelectorAll('.employee-card');
+    expect(cards.length).toBe(5);
+  });
+
+  test("filters_employees_by_department", () => {
+    render(<App />);
+    const dropdown = document.querySelector('#department-filter');
+    fireEvent.change(dropdown, { target: { value: 'Engineering' } });
+    const cards = document.querySelectorAll('.employee-card');
+    expect(cards.length).toBe(2);
+  });
+});
+
+describe("EmployeeCard", () => {
+  test("renders_employee_name", () => {
+    render(<EmployeeCard employeeName="Rajan Kumar" role="Software Engineer" department="Engineering" />);
+    expect(screen.getByText("Rajan Kumar")).toBeInTheDocument();
+  });
+
+  test("renders_employee_role", () => {
+    render(<EmployeeCard employeeName="Rajan Kumar" role="Software Engineer" department="Engineering" />);
+    expect(screen.getByText("Role: Software Engineer")).toBeInTheDocument();
+  });
+
+  test("renders_employee_department", () => {
+    render(<EmployeeCard employeeName="Rajan Kumar" role="Software Engineer" department="Engineering" />);
+    expect(screen.getByText("Department: Engineering")).toBeInTheDocument();
+  });
+
+  test("validates_proptypes", () => {
+    const { propTypes } = EmployeeCard;
+    expect(propTypes).toHaveProperty("employeeName");
+    expect(propTypes).toHaveProperty("role");
+    expect(propTypes).toHaveProperty("department");
+  });
+});

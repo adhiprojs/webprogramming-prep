@@ -1,0 +1,17 @@
+{
+  "name": "w1-cod1",
+  "week": "w1",
+  "kind": "cod",
+  "number": 1,
+  "type": "puppeteer",
+  "title": "My First Webpage",
+  "starterKind": "template",
+  "editable": [
+    "public/index.html",
+    "public/style.css"
+  ],
+  "test": "puppeteer/test.js",
+  "testCount": 6,
+  "starterPasses": 0,
+  "runTotal": 6
+}

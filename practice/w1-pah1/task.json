@@ -1,0 +1,17 @@
+{
+  "name": "w1-pah1",
+  "week": "w1",
+  "kind": "pah",
+  "number": 1,
+  "type": "puppeteer",
+  "title": "Tech Shop Online",
+  "starterKind": "template",
+  "editable": [
+    "public/index.html",
+    "public/style.css"
+  ],
+  "test": "puppeteer/test.js",
+  "testCount": 8,
+  "starterPasses": 0,
+  "runTotal": 8
+}

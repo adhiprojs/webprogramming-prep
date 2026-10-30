@@ -1,0 +1,18 @@
+{
+  "name": "w9-pah1",
+  "week": "w9",
+  "kind": "pah",
+  "number": 1,
+  "type": "react",
+  "title": "Bookstore Inventory (React)",
+  "starterKind": "template",
+  "editable": [
+    "reactapp/src/App.js",
+    "reactapp/src/components/Bookstore.jsx",
+    "reactapp/src/App.css"
+  ],
+  "test": "react/tests/App.test.js",
+  "testCount": 7,
+  "starterPasses": 0,
+  "runTotal": 7
+}

@@ -1,0 +1,178 @@
+const puppeteer = require('puppeteer');
+
+(async () => {
+  const browser = await puppeteer.launch({
+    headless: false,
+    args: ['--headless', '--disable-gpu', '--remote-debugging-port=9222', '--no-sandbox', '--disable-setuid-sandbox']
+  });
+
+  const url = 'https://8081-workspace.examly.io/';
+
+  // Test Case 1: Check if <header> exists
+  const page1 = await browser.newPage();
+  try {
+    await page1.goto(url);
+    const headerExists = await page1.$('header') !== null;
+    if (headerExists) {
+      console.log('TESTCASE:header_element_is_present:success');
+    } else {
+      console.log('TESTCASE:header_element_is_present:failure');
+    }
+  } catch (error) {
+    console.log('TESTCASE:header_element_is_present:failure', error);
+  }
+
+  // Test Case 2: Check if <nav> and links exist
+  const page2 = await browser.newPage();
+  try {
+    await page2.goto(url);
+    const navExists = await page2.$('nav') !== null;
+    const linksCount = await page2.$$eval('nav a', links => links.length);
+    if (navExists && linksCount >= 4) {
+      console.log('TESTCASE:nav_with_links_is_present:success');
+    } else {
+      console.log('TESTCASE:nav_with_links_is_present:failure');
+    }
+  } catch (error) {
+    console.log('TESTCASE:nav_with_links_is_present:failure', error);
+  }
+
+  // Test Case 3: Check if .container exists
+  const page3 = await browser.newPage();
+  try {
+    await page3.goto(url);
+    const containerExists = await page3.$('.container') !== null;
+    if (containerExists) {
+      console.log('TESTCASE:container_div_is_present:success');
+    } else {
+      console.log('TESTCASE:container_div_is_present:failure');
+    }
+  } catch (error) {
+    console.log('TESTCASE:container_div_is_present:failure', error);
+  }
+
+  // Test Case 4: Check if all menu section titles are present
+  const page4 = await browser.newPage();
+  try {
+    await page4.goto(url);
+    const titles = await page4.$$eval('.section-title', el => el.map(e => e.textContent.trim()));
+    const expectedTitles = ['Starters', 'Main Course', 'Desserts'];
+    const allTitlesPresent = expectedTitles.every(title => titles.includes(title));
+    if (allTitlesPresent) {
+      console.log('TESTCASE:all_menu_section_titles_are_present:success');
+    } else {
+      console.log('TESTCASE:all_menu_section_titles_are_present:failure');
+    }
+  } catch (error) {
+    console.log('TESTCASE:all_menu_section_titles_are_present:failure', error);
+  }
+
+  // Test Case 5: Check if at least one .item exists in menu
+  const page5 = await browser.newPage();
+  try {
+    await page5.goto(url);
+    const itemsCount = await page5.$$eval('.item', items => items.length);
+    if (itemsCount >= 6) {
+      console.log('TESTCASE:menu_items_are_present:success');
+    } else {
+      console.log('TESTCASE:menu_items_are_present:failure');
+    }
+  } catch (error) {
+    console.log('TESTCASE:menu_items_are_present:failure', error);
+  }
+
+  // Test Case 6: Check if footer exists
+  const page6 = await browser.newPage();
+  try {
+    await page6.goto(url);
+    const footerExists = await page6.$('footer') !== null;
+    if (footerExists) {
+      console.log('TESTCASE:footer_element_is_present:success');
+    } else {
+      console.log('TESTCASE:footer_element_is_present:failure');
+    }
+  } catch (error) {
+    console.log('TESTCASE:footer_element_is_present:failure', error);
+  }
+
+  // Test Case 7: Check for price elements (.price) in each menu item
+  const page7 = await browser.newPage();
+  try {
+    await page7.goto(url);
+    const priceCount = await page7.$$eval('.price', items => items.length);
+    if (priceCount >= 6) {
+      console.log('TESTCASE:price_elements_are_present_in_menu_items:success');
+    } else {
+      console.log('TESTCASE:price_elements_are_present_in_menu_items:failure');
+    }
+  } catch (error) {
+    console.log('TESTCASE:price_elements_are_present_in_menu_items:failure', error);
+  }
+
+
+  // Test Case 13: Check <h1> text content
+const page8 = await browser.newPage();
+try {
+  await page8.goto(url);
+  await page8.setViewport({ width: 1200, height: 1200 });
+  const h1Text = await page8.$eval('h1', el => el.textContent.trim());
+  if (h1Text === 'Delicious Restaurant') {
+    console.log('TESTCASE:h1_text_is_correct:success');
+  } else {
+    console.log('TESTCASE:h1_text_is_correct:failure');
+  }
+} catch (error) {
+  console.log('TESTCASE:h1_text_is_correct:failure');
+}
+
+// Test Case 13: Check <h2> text content
+const page9 = await browser.newPage();
+try {
+  await page9.goto(url);
+  await page9.setViewport({ width: 1200, height: 1200 });
+  const h2Text = await page9.$eval('h2', el => el.textContent.trim());
+  if (h2Text === 'Starters') {
+    console.log('TESTCASE:h2_text_is_correct:success');
+  } else {
+    console.log('TESTCASE:h2_text_is_correct:failure');
+  }
+} catch (error) {
+  console.log('TESTCASE:h2_text_is_correct:failure');
+}
+
+// Test Case 13: Check <a> text content
+const page10 = await browser.newPage();
+try {
+  await page10.goto(url);
+  await page10.setViewport({ width: 1200, height: 1200 });
+  const aText = await page10.$eval('a', el => el.textContent.trim());
+  if (aText === 'Home') {
+    console.log('TESTCASE:atag_text_is_correct:success');
+  } else {
+    console.log('TESTCASE:atag_text_is_correct:failure');
+  }
+} catch (error) {
+  console.log('TESTCASE:atag_text_is_correct:failure');
+}
+
+
+
+
+
+
+
+  // Cleanup
+  finally {
+    await page1.close();
+    await page2.close();
+    await page3.close();
+    await page4.close();
+    await page5.close();
+    await page6.close();
+    await page7.close();
+    await page8.close();
+    await page9.close();
+    await page10.close();
+    await browser.close();
+  }
+})();

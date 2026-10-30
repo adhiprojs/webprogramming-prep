@@ -1,0 +1,411 @@
+=================== ./appdb/admin/system.version.metadata.json ===================
+{"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_"}],"uuid":"30c63d089b6745b9be286a8b71067a64","collectionName":"system.version","type":"collection"}
+=================== ./appdb/prelude.json ===================
+{"ServerVersion":"6.0.29","ToolVersion":"100.17.0"}
+=================== ./package.json ===================
+{
+  "name": "webtest",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "rm -rf node_modules && npm i && node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "puppeteer": "^19.11.1",
+    "puppeteer-core": "^21.2.0"
+  }
+}
+
+=================== ./public/index.html ===================
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Fitness Activity Planner</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <h1>Fitness Activity Planner</h1>
+
+  <fieldset id="goalFieldset">
+    <legend>Select Fitness Goal</legend>
+    <div class="goal-options">
+      <label><input type="radio" name="fitnessGoal" value="weightloss" data-calories="400"> Weight Loss (400 cal/day)</label>
+      <label><input type="radio" name="fitnessGoal" value="muscle" data-calories="300"> Muscle Gain (300 cal/day)</label>
+      <label><input type="radio" name="fitnessGoal" value="stamina" data-calories="350"> Stamina (350 cal/day)</label>
+    </div>
+    <p>Selected Goal: <strong id="goalDisplay">None</strong></p>
+  </fieldset>
+
+  <fieldset id="daysFieldset">
+    <legend>Select Workout Days</legend>
+    <div class="days-grid">
+      <label><input type="checkbox" id="day1" class="day-checkbox" value="Monday"> Monday</label>
+      <label><input type="checkbox" id="day2" class="day-checkbox" value="Tuesday"> Tuesday</label>
+      <label><input type="checkbox" id="day3" class="day-checkbox" value="Wednesday"> Wednesday</label>
+      <label><input type="checkbox" id="day4" class="day-checkbox" value="Thursday"> Thursday</label>
+      <label><input type="checkbox" id="day5" class="day-checkbox" value="Friday"> Friday</label>
+      <label><input type="checkbox" id="day6" class="day-checkbox" value="Saturday"> Saturday</label>
+      <label><input type="checkbox" id="day7" class="day-checkbox" value="Sunday"> Sunday</label>
+    </div>
+  </fieldset>
+
+  <div class="actions">
+    <button id="calcPlanBtn">Calculate Plan</button>
+    <button id="resetPlanBtn">Reset</button>
+  </div>
+
+  <fieldset id="summaryFieldset">
+    <legend>Weekly Summary</legend>
+    <div class="summary-grid">
+      <div class="summary-card workout">
+        <p>Workout Days</p>
+        <div id="workoutDays">0</div>
+      </div>
+      <div class="summary-card calories">
+        <p>Calories Burned</p>
+        <div id="caloriesBurned">0</div>
+      </div>
+      <div class="summary-card rest">
+        <p>Rest Days</p>
+        <div id="restDays">0</div>
+      </div>
+    </div>
+  </fieldset>
+
+  <script src="script.js"></script>
+</body>
+</html>
+=================== ./public/script.js ===================
+document.addEventListener('DOMContentLoaded', () => {
+
+    const radios = document.querySelectorAll('input[type="radio"][name="fitnessGoal"]');
+    const checkboxes = document.querySelectorAll('input[type="checkbox"].day-checkbox');
+    const goalDisplay = document.getElementById('goalDisplay');
+    const calcPlanBtn = document.getElementById('calcPlanBtn');
+    const resetPlanBtn = document.getElementById('resetPlanBtn');
+    const workoutDaysEl = document.getElementById('workoutDays');
+    const caloriesBurnedEl = document.getElementById('caloriesBurned');
+    const restDaysEl = document.getElementById('restDays');
+  
+    // Update goal display on radio change
+    radios.forEach(radio => {
+      radio.addEventListener('change', () => {
+        goalDisplay.textContent = radio.value;
+      });
+    });
+  
+    // Find the selected fitness goal using a while loop
+    function getSelectedGoal() {
+      let selected = null;
+      let i = 0;
+      while (i < radios.length) {
+        if (radios[i].checked) {
+          selected = radios[i];
+          break;
+        }
+        i++;
+      }
+      return selected;
+    }
+  
+    calcPlanBtn.addEventListener('click', () => {
+      // Count selected workout days using a for loop
+      let workoutDays = 0;
+      for (let i = 0; i < checkboxes.length; i++) {
+        if (checkboxes[i].checked) {
+          workoutDays++;
+        }
+      }
+  
+      const selectedGoal = getSelectedGoal();
+      const caloriesPerDay = selectedGoal
+        ? parseFloat(selectedGoal.getAttribute('data-calories')) || 0
+        : 0;
+  
+      // Compute calories burned per day and accumulate weekly total using a do...while loop
+      let totalCalories = 0;
+      let dayCount = 0;
+      do {
+        totalCalories += caloriesPerDay;
+        dayCount++;
+      } while (dayCount < workoutDays);
+  
+      const restDays = 7 - workoutDays;
+  
+      workoutDaysEl.textContent = workoutDays;
+      caloriesBurnedEl.textContent = totalCalories;
+      restDaysEl.textContent = restDays;
+    });
+  
+    resetPlanBtn.addEventListener('click', () => {
+      checkboxes.forEach(cb => { cb.checked = false; });
+      radios.forEach(r => { r.checked = false; });
+      goalDisplay.textContent = 'None';
+      workoutDaysEl.textContent = 0;
+      caloriesBurnedEl.textContent = 0;
+      restDaysEl.textContent = 0;
+    });
+  
+  });
+=================== ./public/style.css ===================
+* { box-sizing: border-box; font-family: Arial, sans-serif; }
+
+body {
+  background: #f0f2f5;
+  margin: 0;
+  padding: 30px;
+  color: #1a1a2e;
+}
+
+h1 { text-align: center; }
+
+fieldset {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  max-width: 900px;
+  margin: 20px auto;
+  padding: 20px 25px;
+}
+
+legend {
+  font-weight: bold;
+  padding: 0 8px;
+}
+
+.goal-options {
+  display: flex;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
+.days-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.actions {
+  text-align: center;
+  margin: 20px 0;
+}
+
+button {
+  padding: 12px 24px;
+  font-size: 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  margin: 0 8px;
+}
+
+#calcPlanBtn { background: #4361ee; color: #fff; }
+#resetPlanBtn { background: #e0e0e0; color: #1a1a2e; }
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.summary-card {
+  text-align: center;
+  border-radius: 8px;
+  padding: 16px;
+  color: #fff;
+}
+
+.summary-card div {
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.summary-card.workout { background: #4361ee; }
+.summary-card.calories { background: #2ecc71; }
+.summary-card.rest { background: #e67e22; }
+=================== ./puppeteer/test.js ===================
+//Write your code here...
+const puppeteer = require('puppeteer');
+
+(async () => {
+  const browser = await puppeteer.launch({
+    headless: false,
+    args: ['--headless', '--disable-gpu', '--remote-debugging-port=9222', '--no-sandbox', '--disable-setuid-sandbox']
+  });
+
+  const url = 'https://8081-workspace.examly.io';
+  const page = await browser.newPage();
+
+  try {
+    await page.goto(url, { waitUntil: 'networkidle2', timeout: 30000 });
+    await page.waitForSelector('fieldset', { timeout: 10000 });
+  } catch {
+    console.log('TESTCASE:page_load:failure');
+    await browser.close();
+    return;
+  }
+
+  const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+  await wait(500);
+
+  // Test 1: At least 2 fieldset and legend elements exist
+  try {
+    const result = await page.evaluate(() =>
+      document.querySelectorAll('fieldset').length >= 2 &&
+      document.querySelectorAll('legend').length >= 2
+    );
+    console.log(result
+      ? 'TESTCASE:fieldset_and_legend_elements_exist:success'
+      : 'TESTCASE:fieldset_and_legend_elements_exist:failure');
+  } catch {
+    console.log('TESTCASE:fieldset_and_legend_elements_exist:failure');
+  }
+
+  // Test 2: 3 radio buttons with name="fitnessGoal" and values weightloss, muscle, stamina
+  try {
+    const result = await page.evaluate(() => {
+      const radios = document.querySelectorAll('input[type="radio"][name="fitnessGoal"]');
+      const values = Array.from(radios).map(r => r.value);
+      return radios.length === 3 &&
+             values.includes('weightloss') &&
+             values.includes('muscle') &&
+             values.includes('stamina');
+    });
+    console.log(result
+      ? 'TESTCASE:fitness_goal_radio_buttons_exist:success'
+      : 'TESTCASE:fitness_goal_radio_buttons_exist:failure');
+  } catch {
+    console.log('TESTCASE:fitness_goal_radio_buttons_exist:failure');
+  }
+
+  // Test 3: Exactly 7 checkboxes with class day-checkbox
+  try {
+    const count = await page.evaluate(() =>
+      document.querySelectorAll('input[type="checkbox"].day-checkbox').length
+    );
+    console.log(count === 7
+      ? 'TESTCASE:workout_day_checkboxes_exist:success'
+      : 'TESTCASE:workout_day_checkboxes_exist:failure');
+  } catch {
+    console.log('TESTCASE:workout_day_checkboxes_exist:failure');
+  }
+
+  // Test 4: Clicking muscle radio updates #goalDisplay
+  try {
+    await page.evaluate(() => {
+      const radio = document.querySelector('input[type="radio"][name="fitnessGoal"][value="muscle"]');
+      if (radio) {
+        radio.checked = true;
+        radio.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+    });
+    await wait(500);
+    const text = await page.$eval('#goalDisplay', el => el.textContent.trim());
+    console.log(text.includes('muscle')
+      ? 'TESTCASE:selecting_fitness_goal_updates_display:success'
+      : 'TESTCASE:selecting_fitness_goal_updates_display:failure');
+  } catch {
+    console.log('TESTCASE:selecting_fitness_goal_updates_display:failure');
+  }
+
+  // Test 5: Check 4 days, click calcPlanBtn, verify workoutDays = 4
+  try {
+    await page.evaluate(() => {
+      const boxes = document.querySelectorAll('input[type="checkbox"].day-checkbox');
+      for (let i = 0; i < 4; i++) {
+        if (boxes[i]) {
+          boxes[i].checked = true;
+          boxes[i].dispatchEvent(new Event('change', { bubbles: true }));
+        }
+      }
+    });
+    await page.evaluate(() => {
+      const btn = document.querySelector('#calcPlanBtn');
+      if (btn) btn.click();
+    });
+    await wait(500);
+    const days = await page.$eval('#workoutDays', el => parseInt(el.textContent.trim()));
+    console.log(days === 4
+      ? 'TESTCASE:workout_days_count_is_correct:success'
+      : 'TESTCASE:workout_days_count_is_correct:failure');
+  } catch {
+    console.log('TESTCASE:workout_days_count_is_correct:failure');
+  }
+
+  // Test 6: weightloss + 3 days = 1200 calories
+  try {
+    await page.evaluate(() => {
+      // uncheck all first
+      document.querySelectorAll('input[type="checkbox"].day-checkbox').forEach(b => b.checked = false);
+      // select weightloss
+      const radio = document.querySelector('input[type="radio"][name="fitnessGoal"][value="weightloss"]');
+      if (radio) {
+        radio.checked = true;
+        radio.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+      // check 3 days
+      const boxes = document.querySelectorAll('input[type="checkbox"].day-checkbox');
+      for (let i = 0; i < 3; i++) {
+        if (boxes[i]) boxes[i].checked = true;
+      }
+    });
+    await page.evaluate(() => {
+      const btn = document.querySelector('#calcPlanBtn');
+      if (btn) btn.click();
+    });
+    await wait(500);
+    const calories = await page.$eval('#caloriesBurned', el => parseInt(el.textContent.trim()));
+    console.log(calories === 1200
+      ? 'TESTCASE:calories_burned_is_correct:success'
+      : 'TESTCASE:calories_burned_is_correct:failure');
+  } catch {
+    console.log('TESTCASE:calories_burned_is_correct:failure');
+  }
+
+  // Test 7: restDays = 7 - workoutDays
+  try {
+    const days = await page.$eval('#workoutDays', el => parseInt(el.textContent.trim()));
+    const rest = await page.$eval('#restDays', el => parseInt(el.textContent.trim()));
+    console.log(rest === (7 - days)
+      ? 'TESTCASE:rest_days_is_correct:success'
+      : 'TESTCASE:rest_days_is_correct:failure');
+  } catch {
+    console.log('TESTCASE:rest_days_is_correct:failure');
+  }
+
+  // Test 8: Reset clears all
+  try {
+    await page.evaluate(() => {
+      const btn = document.querySelector('#resetPlanBtn');
+      if (btn) btn.click();
+    });
+    await wait(500);
+    const days = await page.$eval('#workoutDays', el => parseInt(el.textContent.trim()));
+    const calories = await page.$eval('#caloriesBurned', el => parseInt(el.textContent.trim()));
+    const rest = await page.$eval('#restDays', el => parseInt(el.textContent.trim()));
+    const anyChecked = await page.evaluate(() =>
+      Array.from(document.querySelectorAll('input[type="checkbox"].day-checkbox')).some(b => b.checked)
+    );
+    console.log(days === 0 && calories === 0 && rest === 0 && !anyChecked
+      ? 'TESTCASE:reset_clears_all_selections:success'
+      : 'TESTCASE:reset_clears_all_selections:failure');
+  } catch {
+    console.log('TESTCASE:reset_clears_all_selections:failure');
+  }
+
+  await browser.close();
+})();
+=================== ./server.js ===================
+const express = require('express');
+const app = express();
+const port = 8081;
+
+app.use(express.static('public'))
+app.listen(port, () => console.log(`listening on port ${port}!`));

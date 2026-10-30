@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Movie Genre Poll</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <h1>Movie Genre Poll</h1>
+
+  <fieldset id="ageFieldset">
+    <legend>Select Your Age Group</legend>
+    <div class="age-options">
+      <label><input type="radio" name="ageGroup" value="teen"> Teen (13-17)</label>
+      <label><input type="radio" name="ageGroup" value="adult"> Adult (18-40)</label>
+      <label><input type="radio" name="ageGroup" value="senior"> Senior (40+)</label>
+    </div>
+    <p>Selected Age Group: <strong id="ageDisplay">None</strong></p>
+  </fieldset>
+
+  <fieldset id="genreFieldset">
+    <legend>Choose Your Favourite Genres</legend>
+    <div class="genre-grid">
+      <label><input type="checkbox" id="genre1" class="genre-checkbox" value="Action"> Action</label>
+      <label><input type="checkbox" id="genre2" class="genre-checkbox" value="Comedy"> Comedy</label>
+      <label><input type="checkbox" id="genre3" class="genre-checkbox" value="Drama"> Drama</label>
+      <label><input type="checkbox" id="genre4" class="genre-checkbox" value="Thriller"> Thriller</label>
+      <label><input type="checkbox" id="genre5" class="genre-checkbox" value="Romance"> Romance</label>
+      <label><input type="checkbox" id="genre6" class="genre-checkbox" value="Sci-Fi"> Sci-Fi</label>
+    </div>
+  </fieldset>
+
+  <div class="actions">
+    <button id="pollSubmitBtn">Submit Poll</button>
+    <button id="pollResetBtn">Reset</button>
+  </div>
+
+  <fieldset id="resultsFieldset">
+    <legend>Poll Results</legend>
+    <div class="summary-grid">
+      <div class="summary-card selected">
+        <p>Genres Selected</p>
+        <div id="genreCount">0</div>
+      </div>
+      <div class="summary-card total">
+        <p>Total Genres Available</p>
+        <div id="totalGenres">6</div>
+      </div>
+    </div>
+    <p><strong>Selected Genres:</strong></p>
+    <ul id="genreResultList">
+      <li id="noGenresMsg">None</li>
+    </ul>
+  </fieldset>
+
+  <script src="script.js"></script>
+</body>
+</html>

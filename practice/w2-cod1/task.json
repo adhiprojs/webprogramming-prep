@@ -1,0 +1,17 @@
+{
+  "name": "w2-cod1",
+  "week": "w2",
+  "kind": "cod",
+  "number": 1,
+  "type": "puppeteer",
+  "title": "Top Tourist Destinations",
+  "starterKind": "template",
+  "editable": [
+    "public/index.html",
+    "public/style.css"
+  ],
+  "test": "puppeteer/test.js",
+  "testCount": 6,
+  "starterPasses": 3,
+  "runTotal": 6
+}

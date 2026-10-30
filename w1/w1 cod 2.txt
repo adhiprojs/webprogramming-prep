@@ -1,0 +1,189 @@
+=================== ./package.json ===================
+{
+  "name": "webtest",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "rm -rf node_modules && npm i && node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "puppeteer": "^19.11.1",
+    "puppeteer-core": "^21.2.0"
+  }
+}
+
+=================== ./public/index.html ===================
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StramFlix - Watch Movies Online</title>
+</head>
+<body>
+
+    <h2>Welcome to StreamFlix</h2>
+    <h3>Your favorite movies, anytime, anywhere.</h3>
+    
+    <p>StreamFlix is the best platform to watch the latest movies, tv shows</p>
+    
+    <h3>Our Top Picks for You</h3>
+    <p><span>Action<span>, <span>Comedy</span>, <span>Drama</span>, <span>Thriller</span></p>
+
+    <footer>
+        <div>Contact us at <u><i>info@streamflix.com</i></u></div>
+    </footer>
+
+    <div>
+        <h4>This should be placed above the main content but is below instead.</h4>
+    </div>
+
+    <footer> 
+        <p>Another footer paragraph</p>
+    </footer>
+</body>
+</html>
+
+=================== ./public/style.css ===================
+/* write you stylings here */
+=================== ./puppeteer/test.js ===================
+const puppeteer = require('puppeteer');
+
+(async () => {
+  const browser = await puppeteer.launch({
+    headless: false,
+    args: ['--headless', '--disable-gpu', '--remote-debugging-port=9222', '--no-sandbox', '--disable-setuid-sandbox']
+  });
+
+  const url = 'https://8081-workspace.examly.io'; // Update with your local file path
+  const page = await browser.newPage();
+
+  // Test Case 1: Title of the Page ("StreamFlix - Watch Movies Online")
+  try {
+    await page.goto(url);
+    const titleText = await page.evaluate(() => {
+      return document.title;
+    });
+    if (titleText === 'StreamFlix - Watch Movies Online') {
+      console.log('TESTCASE:verify_title:success');
+    } else {
+      console.log('TESTCASE:verify_title:failure');
+    }
+  } catch {
+    console.log('TESTCASE:verify_title:failure');
+  }
+
+  // Test Case 2: Main Heading Text ("Welcome to StreamFlix")
+  try {
+    const headerText = await page.evaluate(() => {
+      return document.querySelector('h1').innerText;
+    });
+    if (headerText === 'Welcome to StreamFlix') {
+      console.log('TESTCASE:verify_header_text:success');
+    } else {
+      console.log('TESTCASE:verify_header_text:failure');
+    }
+  } catch {
+    console.log('TESTCASE:verify_header_text:failure');
+  }
+
+  // Test Case 3: Correct Text Formatting in Paragraph ("movies" in bold, "TV Shows" underlined)
+  try {
+    const paragraphText = await page.evaluate(() => {
+      const paragraph = document.querySelector('p').innerText;
+      return paragraph.includes('movies') && paragraph.includes('TV Shows');
+    });
+    const isBold = await page.evaluate(() => {
+      const boldElement = document.querySelector('b');
+      return boldElement !== null;
+    });
+    const isUnderlined = await page.evaluate(() => {
+      const underlineElement = document.querySelector('u');
+      return underlineElement !== null;
+    });
+    if (paragraphText && isBold && isUnderlined) {
+      console.log('TESTCASE:verify_paragraph_formatting:success');
+    } else {
+      console.log('TESTCASE:verify_paragraph_formatting:failure');
+    }
+  } catch {
+    console.log('TESTCASE:verify_paragraph_formatting:failure');
+  }
+
+  // Test Case 4: Correct Placement and Structure of Genres in "Top Picks for You"
+  try {
+    const genreList = await page.evaluate(() => {
+      const genres = Array.from(document.querySelectorAll('span')).map(span => span.innerText);
+      return genres.includes('Action') && genres.includes('Comedy') && genres.includes('Drama') && genres.includes('Thriller');
+    });
+    if (genreList) {
+      console.log('TESTCASE:verify_genre_list:success');
+    } else {
+      console.log('TESTCASE:verify_genre_list:failure');
+    }
+  } catch {
+    console.log('TESTCASE:verify_genre_list:failure');
+  }
+
+  // Test Case 5: Footer Section with Correct Contact Information
+  try {
+    const footerText = await page.evaluate(() => {
+      return document.querySelector('footer p').innerText;
+    });
+    const isUnderlinedEmail = await page.evaluate(() => {
+      const emailElement = document.querySelector('footer u');
+      return emailElement !== null;
+    });
+    if (footerText.includes('info@streamflix.com') && isUnderlinedEmail) {
+      console.log('TESTCASE:verify_footer_contact_info:success');
+    } else {
+      console.log('TESTCASE:verify_footer_contact_info:failure');
+    }
+  } catch {
+    console.log('TESTCASE:verify_footer_contact_info:failure');
+  }
+
+  // Test Case 6: Proper HTML Structure and Correct Nesting of Tags
+try {
+  const htmlStructureValid = await page.evaluate(() => {
+    // Check if the body, footer, <b>, and <u> elements exist
+    const isBodyValid = document.querySelector('body') !== null;
+    const isFooterValid = document.querySelector('footer') !== null;
+    const isBValid = document.querySelector('b') !== null;
+    const isUValid = document.querySelector('u') !== null;
+
+    // Verify if <b> and <u> are correctly nested within <p> tag
+    const isTagCorrectlyNested = document.querySelector('p') && 
+      document.querySelector('p').innerHTML.includes('<b>') &&
+      document.querySelector('p').innerHTML.includes('<u>');
+
+    // Return true if all conditions are met
+    return isBodyValid && isFooterValid && isBValid && isUValid && isTagCorrectlyNested;
+  });
+
+  if (htmlStructureValid) {
+    console.log('TESTCASE:verify_html_structure:success');
+  } else {
+    console.log('TESTCASE:verify_html_structure:failure');
+  }
+} catch (error) {
+  console.log('TESTCASE:verify_html_structure:failure');
+  console.log(error);
+}
+
+
+  await browser.close();
+})();
+
+=================== ./server.js ===================
+const express = require('express');
+const app = express();
+const port = 8081;
+
+app.use(express.static('public'))
+app.listen(port, () => console.log(`listening on port ${port}!`));

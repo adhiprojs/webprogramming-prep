@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Practice IDE</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%233b6fe0'/%3E%3Cpath d='M5 5 2.5 8 5 11M11 5l2.5 3L11 11' stroke='white' stroke-width='1.6' fill='none'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" data-name="vs/editor/editor.main" href="/monaco/vs/editor/editor.main.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">Practice IDE</div>
+    <nav class="weeks" id="weeks" aria-label="Weeks"></nav>
+    <div class="spacer"></div>
+    <button class="ghost" id="themeBtn" title="Toggle light/dark">Theme</button>
+  </header>
+
+  <div class="taskbar">
+    <nav class="tasks" id="tasks" aria-label="Tasks"></nav>
+    <div class="taskinfo" id="taskInfo"></div>
+  </div>
+
+  <main class="layout" id="layout">
+    <section class="side" id="side">
+      <div class="tabs" id="sideTabs">
+        <button data-tab="question" class="active">Question</button>
+        <button data-tab="test">Test file</button>
+        <button data-tab="notes">Notes</button>
+        <button data-tab="report">Report</button>
+        <button data-tab="cheatsheet">Cheatsheet</button>
+      </div>
+      <div class="pane md active" id="pane-question"></div>
+      <div class="pane code" id="pane-test"></div>
+      <div class="pane md" id="pane-notes"></div>
+      <div class="pane md" id="pane-report"></div>
+      <div class="pane md" id="pane-cheatsheet"></div>
+    </section>
+
+    <div class="gutter" id="gutterV" title="Drag to resize"></div>
+
+    <section class="work">
+      <div class="toolbar">
+        <div class="filetabs" id="fileTabs"></div>
+        <div class="actions">
+          <button id="newFileBtn" class="ghost" title="Add a file">+ File</button>
+          <div class="menu">
+            <button class="ghost" id="loadBtn">Load ▾</button>
+            <div class="menu-list" id="loadMenu">
+              <button data-load="solution">Passing solution (all files)</button>
+              <button data-load="original">Original (from the dump)</button>
+              <button data-load="starter">Starter (blank / buggy)</button>
+              <hr>
+              <button data-load="reset" class="danger">Delete my saved answer</button>
+            </div>
+          </div>
+          <div class="menu">
+            <button class="ghost" id="compareBtn">Compare ▾</button>
+            <div class="menu-list" id="compareMenu">
+              <button data-compare="solution">My code vs passing solution</button>
+              <button data-compare="original">My code vs original dump</button>
+              <button data-compare="starter">My code vs starter</button>
+              <hr>
+              <button data-compare="off">Close compare</button>
+            </div>
+          </div>
+          <button id="autosaveBtn" class="ghost toggle" aria-pressed="false" title="Save automatically 1 second after you stop typing">Autosave: off</button>
+          <button id="saveBtn" title="Save (Ctrl+S)">Save</button>
+          <button id="runBtn" class="primary" title="Save and run test cases (Ctrl+Enter)">Run tests</button>
+        </div>
+      </div>
+      <div class="compare-bar" id="compareBar" hidden></div>
+      <div class="editor" id="editor"></div>
+
+      <div class="gutter h" id="gutterH" title="Drag to resize"></div>
+
+      <div class="bottom" id="bottom">
+        <div class="tabs" id="bottomTabs">
+          <button data-tab="results" class="active">Test results <span id="resultBadge" class="badge"></span></button>
+          <button data-tab="preview">Preview</button>
+          <button data-tab="output">Output</button>
+        </div>
+        <div class="pane active" id="pane-results"></div>
+        <div class="pane" id="pane-preview"></div>
+        <div class="pane" id="pane-output"><pre id="outputPre"></pre></div>
+      </div>
+    </section>
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="/vendor/marked/marked.min.js"></script>
+  <script src="/vendor/emmet/emmet-monaco.min.js"></script>
+  <script src="/monaco/vs/loader.js"></script>
+  <script src="/app.js"></script>
+</body>
+</html>

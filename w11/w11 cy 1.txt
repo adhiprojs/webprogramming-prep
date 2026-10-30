@@ -1,0 +1,536 @@
+=================== ./appdb/admin/system.version.metadata.json ===================
+{"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_"}],"uuid":"abf15470061448d9a348fdf5164295df","collectionName":"system.version","type":"collection"}
+=================== ./appdb/prelude.json ===================
+{"ServerVersion":"6.0.29","ToolVersion":"100.17.0"}
+=================== ./reactapp/package.json ===================
+{
+  "name": "reactapp",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
+    "canvas": "^2.11.2",
+    "history": "^5.3.0",
+    "msw": "^1.2.4",
+    "node-fetch": "^3.3.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.15.0",
+    "react-scripts": "5.0.1",
+    "supertest": "^6.3.3",
+    "web-vitals": "^2.1.4"
+  },
+  "devDependencies": {
+    "jest-fetch-mock": "^3.0.3"
+  },
+  "scripts": {
+    "start": "BROWSER=none PORT=8081 react-scripts start --disable-host-check --host 0.0.0.0",
+    "build": "react-scripts build",
+    "test": "react-scripts test --watchAll=false",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
+=================== ./reactapp/public/index.html ===================
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta
+      name="description"
+      content="Web site created using create-react-app"
+    />
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <!--
+      manifest.json provides metadata used when your web app is installed on a
+      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
+    -->
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <!--
+      Notice the use of %PUBLIC_URL% in the tags above.
+      It will be replaced with the URL of the `public` folder during the build.
+      Only files inside the `public` folder can be referenced from the HTML.
+
+      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
+      work correctly both with client-side routing and a non-root public URL.
+      Learn how to configure a non-root public URL by running `npm run build`.
+    -->
+    <title>React App</title>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+    <!--
+      This HTML file is a template.
+      If you open it directly in the browser, you will see an empty page.
+
+      You can add webfonts, meta tags, or analytics to this file.
+      The build step will place the bundled scripts into the <body> tag.
+
+      To begin the development, run `npm start` or `yarn start`.
+      To create a production bundle, use `npm run build` or `yarn build`.
+    -->
+  </body>
+</html>
+
+=================== ./reactapp/public/manifest.json ===================
+{
+  "short_name": "React App",
+  "name": "Create React App Sample",
+  "icons": [
+    {
+      "src": "favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "logo192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "logo512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff"
+}
+
+=================== ./reactapp/src/App.css ===================
+#app-container {
+    font-family: Arial, sans-serif;
+    min-height: 100vh;
+    background: #f0f4f8;
+  }
+  
+  #home-container {
+    max-width: 600px;
+    margin: 60px auto;
+    background: white;
+    padding: 32px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+  
+  #home-title {
+    color: #1a237e;
+    font-size: 26px;
+    margin-bottom: 16px;
+  }
+  
+  #home-student-name,
+  #home-department {
+    color: #333;
+    font-size: 16px;
+    margin-bottom: 8px;
+  }
+  
+  #home-message {
+    color: #888;
+    font-size: 14px;
+    margin-top: 16px;
+  }
+=================== ./reactapp/src/App.js ===================
+import React from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Navbar from "./components/Navbar";
+import Marks from "./components/Marks";
+import "./App.css";
+
+function App() {
+  const marks = [
+    { subject: "Mathematics", score: 92 },
+    { subject: "Physics", score: 85 },
+    { subject: "Chemistry", score: 78 },
+    { subject: "Computer Science", score: 96 },
+    { subject: "English", score: 88 },
+  ];
+
+  return (
+    <BrowserRouter>
+      <div id="app-container">
+        <Navbar studentName="Meena Sharma" />
+
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <div id="home-container">
+                <h1 id="home-title">Welcome to Your Dashboard</h1>
+                <p id="home-student-name">Student: Meena Sharma</p>
+                <p id="home-department">
+                  Department: Computer Science
+                </p>
+                <p id="home-message">
+                  Use the navigation bar to explore your Marks.
+                </p>
+              </div>
+            }
+          />
+
+          <Route path="/marks" element={<Marks marks={marks} />} />
+        </Routes>
+      </div>
+    </BrowserRouter>
+  );
+}
+
+export default App;
+=================== ./reactapp/src/components/Marks.css ===================
+#marks-container {
+    max-width: 600px;
+    margin: 60px auto;
+    background: white;
+    padding: 32px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  #marks-title {
+    color: #1a237e;
+    font-size: 26px;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  .mark-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .mark-subject {
+    color: #333;
+    font-size: 16px;
+  }
+  
+  .mark-score {
+    color: #27ae60;
+    font-size: 16px;
+    font-weight: bold;
+  }
+  
+  #total-score {
+    color: #1a237e;
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 16px;
+    text-align: right;
+  }
+=================== ./reactapp/src/components/Marks.jsx ===================
+import React, { useState, useEffect } from "react";
+import PropTypes from "prop-types";
+import "./Marks.css";
+
+function Marks({ marks }) {
+  const [totalScore, setTotalScore] = useState(0);
+
+  useEffect(() => {
+    const total = marks.reduce((sum, mark) => sum + mark.score, 0);
+    setTotalScore(total);
+
+    console.log("Visited Marks Page");
+  }, [marks]);
+
+  return (
+    <div id="marks-container">
+      <h1 id="marks-title">Subject Marks</h1>
+
+      <div id="marks-list">
+        {marks.map((mark, index) => (
+          <div className="mark-item" key={index}>
+            <span className="mark-subject">{mark.subject}</span>
+            <span className="mark-score">Score: {mark.score}</span>
+          </div>
+        ))}
+      </div>
+
+      <p id="total-score">Total Score: {totalScore}</p>
+    </div>
+  );
+}
+
+Marks.propTypes = {
+  marks: PropTypes.arrayOf(
+    PropTypes.shape({
+      subject: PropTypes.string,
+      score: PropTypes.number,
+    })
+  ).isRequired,
+};
+
+export default Marks;
+=================== ./reactapp/src/components/Navbar.css ===================
+#navbar {
+    background: #1a237e;
+    padding: 14px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  #nav-brand {
+    color: white;
+    font-size: 20px;
+    font-weight: bold;
+  }
+  
+  #nav-links {
+    display: flex;
+    gap: 20px;
+  }
+  
+  #nav-links a {
+    color: white;
+    text-decoration: none;
+    font-size: 16px;
+  }
+  
+  #nav-student {
+    color: #90caf9;
+    font-size: 15px;
+  }
+=================== ./reactapp/src/components/Navbar.jsx ===================
+import React from "react";
+import { Link } from "react-router-dom";
+import PropTypes from "prop-types";
+import "./Navbar.css";
+
+function Navbar({ studentName }) {
+  return (
+    <nav id="navbar">
+      <span id="nav-brand">Student Dashboard</span>
+
+      <div id="nav-links">
+        <Link to="/" id="home-link">
+          Home
+        </Link>
+
+        <Link to="/marks" id="marks-link">
+          Marks
+        </Link>
+      </div>
+
+      <span id="nav-student">Welcome, {studentName}</span>
+    </nav>
+  );
+}
+
+Navbar.propTypes = {
+  studentName: PropTypes.string.isRequired,
+};
+
+export default Navbar;
+=================== ./reactapp/src/index.css ===================
+body {
+  margin: 0;
+  padding: 0;
+}
+=================== ./reactapp/src/index.js ===================
+import React from "react";
+import ReactDOM from "react-dom";
+import App from "./App";
+
+ReactDOM.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
+  document.getElementById("root")
+);
+=================== ./reactapp/src/reportWebVitals.js ===================
+const reportWebVitals = onPerfEntry => {
+  if (onPerfEntry && onPerfEntry instanceof Function) {
+    import('web-vitals').then(({ getCLS, getFID, getFCP, getLCP, getTTFB }) => {
+      getCLS(onPerfEntry);
+      getFID(onPerfEntry);
+      getFCP(onPerfEntry);
+      getLCP(onPerfEntry);
+      getTTFB(onPerfEntry);
+    });
+  }
+};
+
+export default reportWebVitals;
+
+=================== ./reactapp/src/setupTests.js ===================
+// jest-dom adds custom jest matchers for asserting on DOM nodes.
+// allows you to do things like:
+// expect(element).toHaveTextContent(/react/i)
+// learn more: https://github.com/testing-library/jest-dom
+import '@testing-library/jest-dom';
+
+=================== ./reactapp/src/tests/App.test.js ===================
+import React from 'react';
+import { render, screen } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
+import "@testing-library/jest-dom";
+import App from '../App';
+import Navbar from '../components/Navbar';
+import Marks from '../components/Marks';
+
+const marks = [
+  { subject: "Mathematics", score: 92 },
+  { subject: "Physics", score: 85 },
+  { subject: "Chemistry", score: 78 },
+  { subject: "Computer Science", score: 96 },
+  { subject: "English", score: 88 },
+];
+
+describe("App", () => {
+  test("renders_home_title", () => {
+    render(<App />);
+    expect(screen.getByText("Welcome to Your Dashboard")).toBeInTheDocument();
+  });
+
+  test("renders_home_student_name", () => {
+    render(<App />);
+    expect(screen.getByText("Student: Meena Sharma")).toBeInTheDocument();
+  });
+});
+
+describe("Navbar", () => {
+  test("renders_navbar_brand", () => {
+    render(<MemoryRouter><Navbar studentName="Meena Sharma" /></MemoryRouter>);
+    expect(screen.getByText("Student Dashboard")).toBeInTheDocument();
+  });
+
+  test("renders_navbar_links", () => {
+    render(<MemoryRouter><Navbar studentName="Meena Sharma" /></MemoryRouter>);
+    expect(screen.getByText("Home")).toBeInTheDocument();
+    expect(screen.getByText("Marks")).toBeInTheDocument();
+  });
+
+  test("renders_navbar_student_name", () => {
+    render(<MemoryRouter><Navbar studentName="Meena Sharma" /></MemoryRouter>);
+    expect(screen.getByText("Welcome, Meena Sharma")).toBeInTheDocument();
+  });
+
+  test("validates_navbar_proptypes", () => {
+    const { propTypes } = Navbar;
+    expect(propTypes).toHaveProperty("studentName");
+  });
+});
+
+describe("Marks", () => {
+  test("renders_marks_page_title", () => {
+    render(<MemoryRouter><Marks marks={marks} /></MemoryRouter>);
+    expect(screen.getByText("Subject Marks")).toBeInTheDocument();
+  });
+
+  test("renders_marks_list", () => {
+    render(<MemoryRouter><Marks marks={marks} /></MemoryRouter>);
+    const items = document.querySelectorAll('.mark-item');
+    expect(items.length).toBe(5);
+  });
+
+  test("renders_total_score", () => {
+    render(<MemoryRouter><Marks marks={marks} /></MemoryRouter>);
+    expect(screen.getByText("Total Score: 439")).toBeInTheDocument();
+  });
+
+  test("validates_marks_proptypes", () => {
+    const { propTypes } = Marks;
+    expect(propTypes).toHaveProperty("marks");
+  });
+});
+=================== ./react/tests/App.test.js ===================
+import React from 'react';
+import { render, screen } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
+import "@testing-library/jest-dom";
+import App from '../App';
+import Navbar from '../components/Navbar';
+import Marks from '../components/Marks';
+
+const marks = [
+  { subject: "Mathematics", score: 92 },
+  { subject: "Physics", score: 85 },
+  { subject: "Chemistry", score: 78 },
+  { subject: "Computer Science", score: 96 },
+  { subject: "English", score: 88 },
+];
+
+describe("App", () => {
+  test("renders_home_title", () => {
+    render(<App />);
+    expect(screen.getByText("Welcome to Your Dashboard")).toBeInTheDocument();
+  });
+
+  test("renders_home_student_name", () => {
+    render(<App />);
+    expect(screen.getByText("Student: Meena Sharma")).toBeInTheDocument();
+  });
+});
+
+describe("Navbar", () => {
+  test("renders_navbar_brand", () => {
+    render(<MemoryRouter><Navbar studentName="Meena Sharma" /></MemoryRouter>);
+    expect(screen.getByText("Student Dashboard")).toBeInTheDocument();
+  });
+
+  test("renders_navbar_links", () => {
+    render(<MemoryRouter><Navbar studentName="Meena Sharma" /></MemoryRouter>);
+    expect(screen.getByText("Home")).toBeInTheDocument();
+    expect(screen.getByText("Marks")).toBeInTheDocument();
+  });
+
+  test("renders_navbar_student_name", () => {
+    render(<MemoryRouter><Navbar studentName="Meena Sharma" /></MemoryRouter>);
+    expect(screen.getByText("Welcome, Meena Sharma")).toBeInTheDocument();
+  });
+
+  test("validates_navbar_proptypes", () => {
+    const { propTypes } = Navbar;
+    expect(propTypes).toHaveProperty("studentName");
+  });
+});
+
+describe("Marks", () => {
+  test("renders_marks_page_title", () => {
+    render(<MemoryRouter><Marks marks={marks} /></MemoryRouter>);
+    expect(screen.getByText("Subject Marks")).toBeInTheDocument();
+  });
+
+  test("renders_marks_list", () => {
+    render(<MemoryRouter><Marks marks={marks} /></MemoryRouter>);
+    const items = document.querySelectorAll('.mark-item');
+    expect(items.length).toBe(5);
+  });
+
+  test("renders_total_score", () => {
+    render(<MemoryRouter><Marks marks={marks} /></MemoryRouter>);
+    expect(screen.getByText("Total Score: 439")).toBeInTheDocument();
+  });
+
+  test("validates_marks_proptypes", () => {
+    const { propTypes } = Marks;
+    expect(propTypes).toHaveProperty("marks");
+  });
+});

@@ -1,0 +1,202 @@
+=================== ./package.json ===================
+{
+  "name": "webtest",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "rm -rf node_modules && npm i && node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "puppeteer": "^19.11.1",
+    "puppeteer-core": "^21.2.0"
+  }
+}
+
+=================== ./public/index.html ===================
+<!-- write you code here -->
+=================== ./public/style.css ===================
+/* write you stylings here */
+=================== ./puppeteer/test.js ===================
+const puppeteer = require('puppeteer');
+
+(async () => {
+  const browser = await puppeteer.launch({
+    headless: false,
+    args: ['--headless', '--disable-gpu', '--remote-debugging-port=9222', '--no-sandbox', '--disable-setuid-sandbox']
+  });
+
+  const url = 'https://8081-workspace.examly.io'; // Update with your local file path or URL
+  const page = await browser.newPage();
+
+  // Test Case 1: Title of the Page ("E-Commerce Product Catalog")
+  try {
+    await page.goto(url);
+    const titleText = await page.evaluate(() => {
+      return document.title;
+    });
+    if (titleText === 'E-Commerce Product Catalog') {
+      console.log('TESTCASE:verify_title:success');
+    } else {
+      console.log('TESTCASE:verify_title:failure');
+    }
+  } catch {
+    console.log('TESTCASE:verify_title:failure');
+  }
+
+  // Test Case 2: Verify the introductory paragraph text
+  try {
+    const paragraphText = await page.evaluate(() => {
+      return document.querySelector('header p').innerText;
+    });
+    if (paragraphText === 'We offer a wide variety of products to suit all your needs.') {
+      console.log('TESTCASE:verify_intro_paragraph:success');
+    } else {
+      console.log('TESTCASE:verify_intro_paragraph:failure');
+    }
+  } catch {
+    console.log('TESTCASE:verify_intro_paragraph:failure');
+  }
+
+  // Test Case 3: Verify the section heading ("Product Categories")
+  try {
+    const sectionHeading = await page.evaluate(() => {
+      return document.querySelector('section h2').innerText;
+    });
+    if (sectionHeading === 'Product Categories') {
+      console.log('TESTCASE:verify_categories_section:success');
+    } else {
+      console.log('TESTCASE:verify_categories_section:failure');
+    }
+  } catch {
+    console.log('TESTCASE:verify_categories_section:failure');
+  }
+
+  // Test Case 4: Verify the categories list (Electronics, Clothing, Home Appliances)
+  try {
+    const categories = await page.evaluate(() => {
+      const listItems = Array.from(document.querySelector('section:nth-of-type(1) ul').querySelectorAll('li')).map(item => item.innerText);
+      return listItems;
+    });
+
+    if (categories.length === 3 &&
+      categories.includes('Electronics') &&
+      categories.includes('Clothing') &&
+      categories.includes('Home Appliances')) {
+      console.log('TESTCASE:verify_categories_list:success');
+    } else {
+      console.log('TESTCASE:verify_categories_list:failure');
+    }
+  } catch {
+    console.log('TESTCASE:verify_categories_list:failure');
+  }
+
+
+  // Test Case 5: Verify the table structure and columns (Product Name, Price, Description, Image)
+  try {
+    const tableHeaders = await page.evaluate(() => {
+      const headers = Array.from(document.querySelectorAll('table th')).map(th => th.innerText);
+      return headers;
+    });
+    if (tableHeaders.length === 4 &&
+      tableHeaders.includes('Product Name') &&
+      tableHeaders.includes('Price') &&
+      tableHeaders.includes('Description') &&
+      tableHeaders.includes('Image')) {
+      console.log('TESTCASE:verify_table_headers:success');
+    } else {
+      console.log('TESTCASE:verify_table_headers:failure');
+    }
+  } catch {
+    console.log('TESTCASE:verify_table_headers:failure');
+  }
+
+  // Test Case 6: Verify the number of rows in the table (5 rows)
+  try {
+    const tableRows = await page.evaluate(() => {
+      return document.querySelectorAll('table tbody tr').length;
+    });
+    if (tableRows === 5) {
+      console.log('TESTCASE:verify_number_of_rows:success');
+    } else {
+      console.log('TESTCASE:verify_number_of_rows:failure');
+    }
+  } catch {
+    console.log('TESTCASE:verify_number_of_rows:failure');
+  }
+
+  // Test Case 7: Verify the first row's data (Laptop details)
+  try {
+    const firstRow = await page.evaluate(() => {
+      const firstRowCells = Array.from(document.querySelectorAll('table tbody tr')[0].cells).map(cell => cell.innerText);
+      return firstRowCells;
+    });
+    if (firstRow[0] === 'Laptop' && firstRow[1] === '$1200' && firstRow[2] === 'A high-performance laptop') {
+      console.log('TESTCASE:verify_first_row_data:success');
+    } else {
+      console.log('TESTCASE:verify_first_row_data:failure');
+    }
+  } catch {
+    console.log('TESTCASE:verify_first_row_data:failure');
+  }
+
+  // Test Case 8: Verify that the table has borders (check for border-collapse and border styles)
+  try {
+    const hasBorders = await page.evaluate(() => {
+      const table = document.querySelector('table');
+      return table.hasAttribute('border');
+    });
+
+    if (hasBorders) {
+      console.log('TESTCASE:verify_table_borders:success');
+    } else {
+      console.log('TESTCASE:verify_table_borders:failure');
+    }
+  } catch {
+    console.log('TESTCASE:verify_table_borders:failure');
+  }
+
+  // Test Case 9: Verify "Best-Selling Products" section exists
+  try {
+    const bestSellingSection = await page.evaluate(() => {
+      return document.querySelector('section:nth-of-type(3) h2').innerText; // Target the 4th section
+    });
+    if (bestSellingSection === 'Best-Selling Products') {
+      console.log('TESTCASE:verify_best_selling_section:success');
+    } else {
+      console.log('TESTCASE:verify_best_selling_section:failure');
+    }
+  } catch {
+    console.log('TESTCASE:verify_best_selling_section:failure');
+  }
+
+
+  // Test Case 10: Verify "Customer Testimonials" section exists
+  try {
+    const testimonialsSection = await page.evaluate(() => {
+      return document.querySelector('section:nth-of-type(4) h2').innerText; // Target the 6th section
+    });
+    if (testimonialsSection === 'Customer Testimonials') {
+      console.log('TESTCASE:verify_testimonials_section:success');
+    } else {
+      console.log('TESTCASE:verify_testimonials_section:failure');
+    }
+  } catch {
+    console.log('TESTCASE:verify_testimonials_section:failure');
+  }
+
+
+  await browser.close();
+})();
+
+=================== ./server.js ===================
+const express = require('express');
+const app = express();
+const port = 8081;
+
+app.use(express.static('public'))
+app.listen(port, () => console.log(`listening on port ${port}!`));

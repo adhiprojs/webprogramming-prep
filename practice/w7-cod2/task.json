@@ -1,0 +1,18 @@
+{
+  "name": "w7-cod2",
+  "week": "w7",
+  "kind": "cod",
+  "number": 2,
+  "type": "puppeteer",
+  "title": "Age Group and Genre Selector",
+  "starterKind": "blank",
+  "editable": [
+    "public/index.html",
+    "public/script.js",
+    "public/style.css"
+  ],
+  "test": "puppeteer/test.js",
+  "testCount": 6,
+  "starterPasses": 0,
+  "runTotal": 6
+}

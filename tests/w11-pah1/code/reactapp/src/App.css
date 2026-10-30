@@ -1,0 +1,22 @@
+#app-container {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+#directory-title {
+  color: #2c3e50;
+  font-size: 28px;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+#department-filter {
+  display: block;
+  margin: 0 auto 24px auto;
+  padding: 8px 16px;
+  font-size: 16px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
