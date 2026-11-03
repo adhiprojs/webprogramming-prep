@@ -22,6 +22,15 @@ Build an event page with a header (logo, event name and tagline), five sections 
 - The logo `img` must be inside the `header`, and the venue `img` inside the fourth section.
 - Speakers are `article` elements inside the third section, not `div`s.
 
+## Images
+
+These sample images are already in the project (plain coloured placeholders). Use them with the `src` shown; any other file name gives a broken image.
+
+| File | Use in HTML |
+|---|---|
+| `public/logo.png` | `src="logo.png"` |
+| `public/venue.jpg` | `src="venue.jpg"` |
+
 ## Files
 
 - `public/index.html`

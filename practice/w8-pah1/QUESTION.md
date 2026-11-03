@@ -21,6 +21,16 @@ Build a page with three overlapping images and three buttons. Each button brings
 - `public/` already has `img1.jpg`, `img2.jpg` and `img3.jpg` (placeholders). A `src` that points to a missing file is a 404 console error and fails case 7.
 - Buttons are clicked by id, so the images must not cover them.
 
+## Images
+
+These sample images are already in the project (plain coloured placeholders). Use them with the `src` shown; any other file name gives a broken image.
+
+| File | Use in HTML |
+|---|---|
+| `public/img1.jpg` | `src="img1.jpg"` |
+| `public/img2.jpg` | `src="img2.jpg"` |
+| `public/img3.jpg` | `src="img3.jpg"` |
+
 ## Files
 
 - `public/index.html`

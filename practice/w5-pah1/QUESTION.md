@@ -23,6 +23,16 @@ Build a responsive testimonials section. Each testimonial shows a customer photo
 - The test waits `500`ms after resizing the viewport, so layout must settle quickly.
 - Images must load without console errors; use local images or none that break.
 
+## Images
+
+These sample images are already in the project (plain coloured placeholders). Use them with the `src` shown; any other file name gives a broken image.
+
+| File | Use in HTML |
+|---|---|
+| `public/Jessica Smith.jpg` | `src="Jessica Smith.jpg"` |
+| `public/Michael Johnson.jpg` | `src="Michael Johnson.jpg"` |
+| `public/Sarah Brown.jpg` | `src="Sarah Brown.jpg"` |
+
 ## Files
 
 - `public/index.html`

@@ -85,6 +85,7 @@ function dirs(name) {
   return {
     code: path.join(TESTS, name, 'code'),
     solution: path.join(TESTS, name, 'solution'),
+    minimal: path.join(TESTS, name, 'minimal'),
     results: path.join(TESTS, name, 'results.md'),
     practice: path.join(PRACTICE, name),
     starter: fs.existsSync(path.join(PRACTICE, name, 'starter'))
@@ -169,13 +170,37 @@ function saveFiles(name, files) {
   syncReactPreview(name);
 }
 
+// Runner process per task, so the IDE's Stop button can end it.
+const running = new Map();
+
+function startRunner(name, appDir) {
+  const child = spawn(NODE14, [RUNNER, appDir, '--test', path.join(dirs(name).code, meta(name).test), '--json'], { cwd: ROOT, windowsHide: true });
+  running.set(name, child);
+  child.on('close', () => { if (running.get(name) === child) running.delete(name); });
+  return child;
+}
+
+function stopRunner(name) {
+  const child = running.get(name);
+  if (!child) return false;
+  child.stoppedByUser = true;
+  // Linux/macOS: the runner catches SIGTERM, kills the test's process group and still reports.
+  // Windows: no signals, so kill the whole tree.
+  if (IS_WIN) spawn('taskkill', ['/pid', String(child.pid), '/T', '/F'], { windowsHide: true });
+  else child.kill('SIGTERM');
+  return true;
+}
+
+function stoppedResult(type, out) {
+  return { type, stopped: true, tests: [{ name: '(stopped)', status: 'failed', message: 'Stopped before the test finished.' }], output: out, passed: 0, failed: 1 };
+}
+
 function runTests(name) {
   const m = meta(name);
   const d = dirs(name);
   const ws = composeWorkspace(name);
-  const testFile = path.join(d.code, m.test);
   return new Promise((resolve) => {
-    const child = spawn(NODE14, [RUNNER, ws, '--test', testFile, '--json'], { cwd: ROOT, windowsHide: true });
+    const child = startRunner(name, ws);
     let out = '';
     let err = '';
     child.stdout.on('data', (c) => { out += c; });
@@ -186,11 +211,14 @@ function runTests(name) {
       try {
         result = JSON.parse(out);
       } catch (e) {
-        result = { type: m.type, tests: [{ name: '(runner error)', status: 'failed', message: err || out }], output: err || out, passed: 0, failed: 1 };
+        result = child.stoppedByUser ? stoppedResult(m.type, err || out)
+          : { type: m.type, tests: [{ name: '(runner error)', status: 'failed', message: err || out }], output: err || out, passed: 0, failed: 1 };
       }
       result.at = new Date().toISOString();
-      fs.mkdirSync(d.practice, { recursive: true });
-      fs.writeFileSync(d.lastRun, JSON.stringify(result, null, 2));
+      if (!result.stopped) {
+        fs.mkdirSync(d.practice, { recursive: true });
+        fs.writeFileSync(d.lastRun, JSON.stringify(result, null, 2));
+      }
       resolve(result);
     });
   });
@@ -245,13 +273,14 @@ function startReactPreview(name) {
   proc.on('close', () => { if (preview && preview.proc === proc) preview.ready = false; });
 }
 
-process.on('exit', stopReactPreview);
+process.on('exit', () => { stopReactPreview(); for (const name of running.keys()) stopRunner(name); });
 for (const sig of ['SIGINT', 'SIGTERM']) process.on(sig, () => { stopReactPreview(); process.exit(0); });
 
 // ---------- HTTP ----------
 
 const app = express();
 app.use(express.json({ limit: '5mb' }));
+app.use('/api', (req, res, next) => { res.set('Cache-Control', 'no-store'); next(); });
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/monaco', express.static(path.join(__dirname, 'node_modules', 'monaco-editor', 'min')));
 app.use('/vendor/emmet', express.static(path.join(__dirname, 'node_modules', 'emmet-monaco-es', 'dist')));
@@ -282,6 +311,7 @@ app.get('/api/task/:name', api((req) => {
       answer: readIf(path.join(d.answer, rel)),
       original: readIf(path.join(d.code, rel)),
       solution: readIf(path.join(d.solution, rel)),
+      minimal: readIf(path.join(d.minimal, rel)),
     };
   }
   // Solution files the starter doesn't have (e.g. a new component) are listed too, so "Load solution" is complete.
@@ -289,7 +319,14 @@ app.get('/api/task/:name', api((req) => {
     if (files[rel]) continue;
     try { checkRel(rel); } catch (e) { continue; }
     if (readIf(path.join(d.starter, rel)) === readIf(path.join(d.solution, rel))) continue;
-    files[rel] = { starter: null, answer: readIf(path.join(d.answer, rel)), original: readIf(path.join(d.code, rel)), solution: readIf(path.join(d.solution, rel)), solutionOnly: true };
+    files[rel] = { starter: null, answer: readIf(path.join(d.answer, rel)), original: readIf(path.join(d.code, rel)), solution: readIf(path.join(d.solution, rel)), minimal: readIf(path.join(d.minimal, rel)), solutionOnly: true };
+  }
+  // Same for files only the minimal version has.
+  for (const rel of walk(d.minimal)) {
+    if (files[rel]) continue;
+    try { checkRel(rel); } catch (e) { continue; }
+    if (readIf(path.join(d.starter, rel)) === readIf(path.join(d.minimal, rel))) continue;
+    files[rel] = { starter: null, answer: readIf(path.join(d.answer, rel)), original: readIf(path.join(d.code, rel)), solution: null, minimal: readIf(path.join(d.minimal, rel)), solutionOnly: true };
   }
   return {
     meta: m,
@@ -300,6 +337,7 @@ app.get('/api/task/:name', api((req) => {
     testSource: readIf(path.join(d.code, m.test)),
     last: readJson(d.lastRun),
     hasSolution: fs.existsSync(d.solution),
+    hasMinimal: fs.existsSync(d.minimal),
   };
 }));
 
@@ -315,6 +353,11 @@ app.post('/api/task/:name/run', api(async (req) => {
   return runTests(req.params.name);
 }));
 
+app.post('/api/task/:name/stop', api((req) => {
+  checkName(req.params.name);
+  return { stopped: stopRunner(req.params.name) };
+}));
+
 // Run the stored solution (proves it passes, without touching your answer).
 app.post('/api/task/:name/run-solution', api(async (req) => {
   const { name } = req.params;
@@ -322,12 +365,16 @@ app.post('/api/task/:name/run-solution', api(async (req) => {
   const d = dirs(name);
   if (!fs.existsSync(d.solution)) throw Object.assign(new Error('no solution yet'), { status: 404 });
   return new Promise((resolve) => {
-    const child = spawn(NODE14, [RUNNER, d.solution, '--test', path.join(d.code, meta(name).test), '--json'], { cwd: ROOT, windowsHide: true });
+    const child = startRunner(name, d.solution);
     let out = '';
+    let err = '';
     child.stdout.on('data', (c) => { out += c; });
-    child.stderr.on('data', (c) => { out += c; });
+    child.stderr.on('data', (c) => { err += c; });
     child.on('close', () => {
-      try { resolve(JSON.parse(out)); } catch (e) { resolve({ tests: [{ name: '(runner error)', status: 'failed', message: out }], passed: 0, failed: 1 }); }
+      try { resolve(JSON.parse(out)); } catch (e) {
+        resolve(child.stoppedByUser ? stoppedResult(meta(name).type, err || out)
+          : { tests: [{ name: '(runner error)', status: 'failed', message: err || out }], passed: 0, failed: 1 });
+      }
     });
   });
 }));

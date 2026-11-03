@@ -27,6 +27,10 @@ Build a `Stopwatch` React component with Start, Stop, Add Lap and Reset buttons 
 - The test keeps references to the buttons from before clicking, so keep the same button elements rendered and toggle only their `disabled` state.
 - `getByText('Start')` and `getByText('Stop')` are exact matches; the heading `Stopwatch` does not clash with them.
 
+## Images
+
+`reactapp/src/logo.svg` is in the project (a placeholder for the React template logo), so `import logo from './logo.svg';` works.
+
 ## Files
 
 - `reactapp/src/App.js`

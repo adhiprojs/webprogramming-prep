@@ -21,6 +21,17 @@ Build a styled footer containing a row of social icons, a list of links and a co
 - `text-align: center` must be set on (or inherited by) the `footer` itself.
 - `.social-icon` elements and `.footer-links a` must be placed so the selectors match (links inside `.footer-links`).
 
+## Images
+
+These sample images are already in the project (plain coloured placeholders). Use them with the `src` shown; any other file name gives a broken image.
+
+| File | Use in HTML |
+|---|---|
+| `public/facebook.png` | `src="facebook.png"` |
+| `public/twitter.png` | `src="twitter.png"` |
+| `public/instagram.png` | `src="instagram.png"` |
+| `public/linkedin.png` | `src="linkedin.png"` |
+
 ## Files
 
 - `public/index.html`

@@ -18,7 +18,7 @@ Plain HTML + CSS. Exact values:
 | verify_image_width | `img.width === 300` for all |
 
 ## 3. The original submission
-Original blank template (3/6; the three image/every() tests passed only because there were no items). Reference passes 6/6. Gotcha: image files do not exist, so a broken image has no natural size and `width="300"` alone gave a wrong `img.width`. Solution adds `img { width: 300px; display: block; }` in style.css as well as the width attribute.
+Original blank template (3/6; the three image/every() tests passed only because there were no items). Reference passes 6/6. Gotcha: on the exam the image files may not exist (the practice project now has placeholders in `public/images/`), and a broken image has no natural size and `width="300"` alone gave a wrong `img.width`. Solution adds `img { width: 300px; display: block; }` in style.css as well as the width attribute.
 
 ## 4. Common mistakes
 - Using `ul` for the outer list (test needs `ol > li`).

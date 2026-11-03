@@ -1,0 +1,177 @@
+const puppeteer = require('puppeteer');
+
+(async () => {
+  const browser = await puppeteer.launch({
+    headless: false,
+    args: ['--headless', '--disable-gpu', '--remote-debugging-port=9222', '--no-sandbox', '--disable-setuid-sandbox']
+  });
+
+  const page = await browser.newPage();
+  const url = 'https://8081-workspace.examly.io'; 
+
+  try {
+    await page.goto(url, { waitUntil: 'domcontentloaded' });
+    await page.waitForSelector('#img1');
+    await page.waitForSelector('#img2');
+    await page.waitForSelector('#img3');
+  } catch {
+    console.log('TESTCASE:page_load:failure');
+    await browser.close();
+    return;
+  }
+
+  // Test 1: Initial overlap and z-index
+  try {
+    const zIndexes = await page.evaluate(() => {
+      return {
+        img1: document.getElementById('img1').style.zIndex || window.getComputedStyle(document.getElementById('img1')).zIndex,
+        img2: document.getElementById('img2').style.zIndex || window.getComputedStyle(document.getElementById('img2')).zIndex,
+        img3: document.getElementById('img3').style.zIndex || window.getComputedStyle(document.getElementById('img3')).zIndex,
+      };
+    });
+
+    console.log(zIndexes.img1 === '1' && zIndexes.img2 === '2' && zIndexes.img3 === '3'
+      ? 'TESTCASE:initial_zindex_and_overlap:success'
+      : 'TESTCASE:initial_zindex_and_overlap:failure');
+  } catch {
+    console.log('TESTCASE:initial_zindex_and_overlap:failure');
+  }
+
+  // Test 2: Clicking Button 1 brings Image 1 to front
+  try {
+    await page.click('#btn1');
+    await page.waitForTimeout(100);  // Allow DOM to update
+
+    const zIndexes = await page.evaluate(() => ({
+      img1: document.getElementById('img1').style.zIndex,
+      img2: document.getElementById('img2').style.zIndex,
+      img3: document.getElementById('img3').style.zIndex,
+    }));
+
+    console.log(zIndexes.img1 === '10' && zIndexes.img2 === '1' && zIndexes.img3 === '1'
+      ? 'TESTCASE:button1_brings_img1_front:success'
+      : 'TESTCASE:button1_brings_img1_front:failure');
+  } catch {
+    console.log('TESTCASE:button1_brings_img1_front:failure');
+  }
+
+  // Test 3: Clicking Button 2 brings Image 2 to front
+  try {
+    await page.click('#btn2');
+    await page.waitForTimeout(100);  // Allow DOM to update
+
+    const zIndexes = await page.evaluate(() => ({
+      img1: document.getElementById('img1').style.zIndex,
+      img2: document.getElementById('img2').style.zIndex,
+      img3: document.getElementById('img3').style.zIndex,
+    }));
+
+    console.log(zIndexes.img2 === '10' && zIndexes.img1 === '1' && zIndexes.img3 === '1'
+      ? 'TESTCASE:button2_brings_img2_front:success'
+      : 'TESTCASE:button2_brings_img2_front:failure');
+  } catch {
+    console.log('TESTCASE:button2_brings_img2_front:failure');
+  }
+
+  // Test 4: Clicking Button 3 brings Image 3 to front
+  try {
+    await page.click('#btn3');
+    await page.waitForTimeout(100);  // Allow DOM to update
+
+    const zIndexes = await page.evaluate(() => ({
+      img1: document.getElementById('img1').style.zIndex,
+      img2: document.getElementById('img2').style.zIndex,
+      img3: document.getElementById('img3').style.zIndex,
+    }));
+
+    console.log(zIndexes.img3 === '10' && zIndexes.img1 === '1' && zIndexes.img2 === '1'
+      ? 'TESTCASE:button3_brings_img3_front:success'
+      : 'TESTCASE:button3_brings_img3_front:failure');
+  } catch {
+    console.log('TESTCASE:button3_brings_img3_front:failure');
+  }
+
+  // Test 5: Z-index updates dynamically (img3=10, others=1)
+  try {
+    const zDynamic = await page.evaluate(() => {
+      const z1 = document.getElementById('img1').style.zIndex;
+      const z2 = document.getElementById('img2').style.zIndex;
+      const z3 = document.getElementById('img3').style.zIndex;
+      return z3 === '10' && z1 === '1' && z2 === '1';
+    });
+
+    console.log(zDynamic
+      ? 'TESTCASE:zindex_updates_dynamically:success'
+      : 'TESTCASE:zindex_updates_dynamically:failure');
+  } catch {
+    console.log('TESTCASE:zindex_updates_dynamically:failure');
+  }
+
+  // Test 6: Buttons remain responsive after multiple clicks
+  try {
+    let responsive = true;
+    for (let i = 0; i < 3; i++) {
+      await page.click('#btn1');
+      let z1 = await page.$eval('#img1', el => el.style.zIndex);
+      if (z1 !== '10') responsive = false;
+
+      await page.click('#btn2');
+      let z2 = await page.$eval('#img2', el => el.style.zIndex);
+      if (z2 !== '10') responsive = false;
+
+      await page.click('#btn3');
+      let z3 = await page.$eval('#img3', el => el.style.zIndex);
+      if (z3 !== '10') responsive = false;
+    }
+
+    console.log(responsive
+      ? 'TESTCASE:buttons_remain_responsive:success'
+      : 'TESTCASE:buttons_remain_responsive:failure');
+  } catch {
+    console.log('TESTCASE:buttons_remain_responsive:failure');
+  }
+
+  // Test 7: No console errors on button click
+  try {
+    const errorPage = await browser.newPage();
+    const logs = [];
+
+    errorPage.on('console', msg => {
+      if (msg.type() === 'error') logs.push(msg.text());
+    });
+
+    await errorPage.goto(url, { waitUntil: 'domcontentloaded' });
+    await errorPage.click('#btn1');
+    await errorPage.click('#btn2');
+    await errorPage.click('#btn3');
+
+    console.log(logs.length === 0
+      ? 'TESTCASE:no_console_errors_on_click:success'
+      : 'TESTCASE:no_console_errors_on_click:failure');
+
+    await errorPage.close();
+  } catch {
+    console.log('TESTCASE:no_console_errors_on_click:failure');
+  }
+
+  // Test 8: Only the selected image is brought to front
+  try {
+    await page.click('#btn2');
+    await page.waitForTimeout(100);  // Allow DOM to update
+    const z = await page.evaluate(() => ({
+      img1: document.getElementById('img1').style.zIndex,
+      img2: document.getElementById('img2').style.zIndex,
+      img3: document.getElementById('img3').style.zIndex
+    }));
+
+    const onlyOneFront = z.img2 === '10' && z.img1 === '1' && z.img3 === '1';
+
+    console.log(onlyOneFront
+      ? 'TESTCASE:only_selected_image_in_front:success'
+      : 'TESTCASE:only_selected_image_in_front:failure');
+  } catch {
+    console.log('TESTCASE:only_selected_image_in_front:failure');
+  }
+
+  await browser.close();
+})();

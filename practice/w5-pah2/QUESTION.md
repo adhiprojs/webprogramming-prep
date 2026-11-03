@@ -22,6 +22,19 @@ Build a responsive product gallery using flexbox. Each product has an image and 
 - `padding` and `margin` are read with `parseInt`, so use px values.
 - The test waits `500`ms after resizing, so avoid slow transitions on layout.
 
+## Images
+
+These sample images are already in the project (plain coloured placeholders). Use them with the `src` shown; any other file name gives a broken image.
+
+| File | Use in HTML |
+|---|---|
+| `public/Wireless Headphones.jpg` | `src="Wireless Headphones.jpg"` |
+| `public/Smartwatch.jpg` | `src="Smartwatch.jpg"` |
+| `public/Laptop Backpack.jpg` | `src="Laptop Backpack.jpg"` |
+| `public/Portable Speaker.jpg` | `src="Portable Speaker.jpg"` |
+| `public/Wireless Mouse.jpg` | `src="Wireless Mouse.jpg"` |
+| `public/USB-C Hub.jpg` | `src="USB-C Hub.jpg"` |
+
 ## Files
 
 - `public/index.html`

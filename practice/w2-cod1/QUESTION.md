@@ -18,6 +18,18 @@ Build a page that lists five top tourist destinations as an ordered list. Each d
 - The image files may not exist, so do not depend on the real image size: set the width explicitly (the `width` attribute or CSS) so it reads `300`.
 - Use `h2` for destination names, and keep the single `h1` as the main heading.
 
+## Images
+
+These sample images are already in the project (plain coloured placeholders). Use them with the `src` shown; any other file name gives a broken image.
+
+| File | Use in HTML |
+|---|---|
+| `public/images/paris.jpg` | `src="images/paris.jpg"` |
+| `public/images/tokyo.jpg` | `src="images/tokyo.jpg"` |
+| `public/images/newyork.jpg` | `src="images/newyork.jpg"` |
+| `public/images/rome.jpg` | `src="images/rome.jpg"` |
+| `public/images/sydney.jpg` | `src="images/sydney.jpg"` |
+
 ## Files
 
 - `public/index.html`

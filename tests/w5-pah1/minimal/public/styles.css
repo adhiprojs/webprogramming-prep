@@ -1,0 +1,14 @@
+#testimonialsSection {
+  display: flex;
+  gap: 20px;
+}
+
+.testimonialDiv img {
+  border-radius: 50%;
+}
+
+@media (max-width: 768px) {
+  #testimonialsSection {
+    flex-direction: column;
+  }
+}

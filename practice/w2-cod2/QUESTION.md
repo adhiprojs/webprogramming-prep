@@ -20,6 +20,17 @@ The given page has bugs. Fix it so that the hotel page has a header, four sectio
 - Rows are counted in `table tbody tr`, so the data rows belong in the table body, not in the header row.
 - Reviews are `h4` elements inside the `aside`, under the `h3` heading.
 
+## Images
+
+These sample images are already in the project (plain coloured placeholders). Use them with the `src` shown; any other file name gives a broken image.
+
+| File | Use in HTML |
+|---|---|
+| `public/logo.png` | `src="logo.png"` |
+| `public/room1.jpg` | `src="room1.jpg"` |
+| `public/room2.jpg` | `src="room2.jpg"` |
+| `public/pool.jpg` | `src="pool.jpg"` |
+
 ## Files
 
 - `public/index.html`

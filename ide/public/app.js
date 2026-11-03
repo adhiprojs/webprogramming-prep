@@ -26,7 +26,7 @@
     data: null,          // /api/task/:name payload for the open task
     buffers: {},         // name -> { rel -> { model, saved } }   (kept across task switches)
     activeFile: {},      // name -> rel
-    compare: null,       // 'solution' | 'original' | 'starter' | null
+    compare: null,       // 'solution' | 'minimal' | 'original' | 'starter' | null
     autosave: store.get('autosave', false),
     reveal: {},          // name -> { notes: bool, report: bool }
     running: false,
@@ -36,8 +36,9 @@
 
   // ---------- api ----------
   async function api(url, body) {
-    const res = await fetch(url, body === undefined ? {} : {
-      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body),
+    // no-store: never reuse a task reply cached from an older server
+    const res = await fetch(url, body === undefined ? { cache: 'no-store' } : {
+      method: 'POST', cache: 'no-store', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body),
     });
     const j = await res.json().catch(() => ({}));
     if (!res.ok) throw new Error(j.error || res.statusText);
@@ -298,19 +299,47 @@
     if (!quiet) toast('Saved');
   }
 
+  // While a test runs: spinner, elapsed time and a Stop button (the toolbar Run button turns into Stop too).
+  let runTimer = null;
+  function showRunning(text) {
+    const secs = el('span', { class: 'meta' }, '0s');
+    const started = Date.now();
+    clearInterval(runTimer);
+    runTimer = setInterval(() => { secs.textContent = `${Math.round((Date.now() - started) / 1000)}s · stops by itself after 120s`; }, 1000);
+    $('pane-results').replaceChildren(el('div', { class: 'running' }, el('span', { class: 'spinner' }), text, secs,
+      el('button', { class: 'danger', onclick: stopRun }, 'Stop')));
+    $('runBtn').textContent = 'Stop';
+    $('runBtn').classList.replace('primary', 'danger');
+    $('runBtn').title = 'Stop the running test';
+  }
+  function doneRunning() {
+    clearInterval(runTimer);
+    state.running = null;
+    $('runBtn').textContent = 'Run tests';
+    $('runBtn').classList.replace('danger', 'primary');
+    $('runBtn').title = 'Save and run test cases (Ctrl+Enter)';
+  }
+  async function stopRun() {
+    if (!state.running) return;
+    $('pane-results').querySelectorAll('.running button').forEach((b) => { b.disabled = true; b.textContent = 'Stopping…'; });
+    try { await api(`/api/task/${state.running}/stop`, {}); } catch (e) { toast('Stop failed: ' + e.message); }
+  }
+
   async function run() {
     if (!state.name || state.running) return;
     const name = state.name;
-    state.running = true;
-    $('runBtn').disabled = true;
+    state.running = name;
     showBottom('results');
-    $('pane-results').replaceChildren(el('div', { class: 'running' }, el('span', { class: 'spinner' }),
-      state.data.meta.type === 'react' ? 'Running Jest (React Testing Library)…' : 'Starting the page and running Puppeteer…'));
+    showRunning(state.data.meta.type === 'react' ? 'Running Jest (React Testing Library)…' : 'Starting the page and running Puppeteer…');
     try {
       const files = dirtyFiles(name);
       const result = await api(`/api/task/${name}/run`, { files });
       markSaved(name, files);
       reloadPreview();
+      if (result.stopped) {
+        if (state.name === name) { renderResults(result, 'Stopped'); renderOutput(result); renderFileTabs(); }
+        return toast('Test stopped');
+      }
       if (state.name === name) {
         state.data.last = result;
         renderResults(result, 'Your code');
@@ -325,19 +354,22 @@
     } catch (e) {
       $('pane-results').replaceChildren(el('div', { class: 'empty' }, 'Run failed: ' + e.message));
     } finally {
-      state.running = false;
-      $('runBtn').disabled = false;
+      doneRunning();
     }
   }
 
   async function runSolution() {
+    if (!state.name || state.running) return;
     const name = state.name;
-    $('pane-results').replaceChildren(el('div', { class: 'running' }, el('span', { class: 'spinner' }), 'Running the stored passing solution…'));
+    state.running = name;
+    showRunning('Running the stored passing solution…');
     try {
       const r = await api(`/api/task/${name}/run-solution`, {});
-      if (state.name === name) { renderResults(r, 'Passing solution'); renderOutput(r); }
+      if (state.name === name) { renderResults(r, r.stopped ? 'Stopped' : 'Passing solution'); renderOutput(r); }
     } catch (e) {
       $('pane-results').replaceChildren(el('div', { class: 'empty' }, e.message));
+    } finally {
+      doneRunning();
     }
   }
 
@@ -349,7 +381,7 @@
     toast(state.autosave ? 'Autosave on: saves 1s after you stop typing' : 'Autosave off');
   };
   renderAutosave();
-  $('runBtn').onclick = run;
+  $('runBtn').onclick = () => (state.running ? stopRun() : run());
 
   // ---------- load menu ----------
   function setMenu(btn, list) {
@@ -386,6 +418,7 @@
       return toast('Reset to starter');
     }
     if (which === 'solution' && !state.data.hasSolution) return toast('No passing solution stored for this task yet');
+    if (which === 'minimal' && !state.data.hasMinimal) return toast('No minimal version stored for this task yet');
     let n = 0;
     loading = true;
     try {
@@ -401,7 +434,7 @@
     }
     renderFileTabs();
     renderTasks();
-    toast(`Loaded ${which} into ${n} file${n === 1 ? '' : 's'} (not saved yet; Ctrl+Z undoes)`);
+    toast(`Loaded ${which === 'minimal' ? 'minimal version' : which} into ${n} file${n === 1 ? '' : 's'} (not saved yet; Ctrl+Z undoes)`);
   });
 
   // ---------- compare ----------
@@ -436,7 +469,7 @@
     const original = monaco.editor.createModel(other == null ? '' : other, langOf(rel));
     diffEditor.setModel({ original, modified: buf(name)[rel].model });
     if (prev && prev.original) prev.original.dispose();
-    const label = { solution: 'passing solution', original: 'original dump', starter: 'starter' }[which];
+    const label = { solution: 'passing solution', minimal: 'minimal (just passes)', original: 'original dump', starter: 'starter' }[which];
     const bar = $('compareBar');
     bar.hidden = false;
     bar.replaceChildren(
@@ -522,14 +555,14 @@
     }
     const total = r.tests.length;
     const ok = r.passed === total && total > 0;
-    if (label !== 'Passing solution') {
+    if (label !== 'Passing solution' && label !== 'Stopped') {
       badge.textContent = `${r.passed}/${total}`;
       badge.className = 'badge ' + (ok ? 'pass' : 'fail');
     }
     const when = r.at ? new Date(r.at).toLocaleString() : '';
     pane.replaceChildren(
       el('div', { class: 'summary' },
-        el('span', { class: 'big ' + (ok ? 'pass' : 'fail') }, `${r.passed}/${total} passed`),
+        el('span', { class: 'big ' + (ok ? 'pass' : 'fail') }, r.stopped ? `Stopped · ${r.passed}/${total} passed before stopping` : `${r.passed}/${total} passed`),
         el('span', { class: 'meta' }, [label, r.node ? 'node ' + r.node : '', when].filter(Boolean).join(' · ')),
         actions),
       ...r.tests.map((t) => {

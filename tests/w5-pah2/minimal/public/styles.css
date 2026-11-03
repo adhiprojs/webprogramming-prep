@@ -1,0 +1,20 @@
+#gallerySection {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.productDiv {
+  padding: 10px;
+  margin: 10px;
+  width: 40%;
+}
+
+.productImg {
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .productDiv {
+    width: 100%;
+  }
+}

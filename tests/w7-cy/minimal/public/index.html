@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<body>
+  <fieldset>
+    <legend>Student</legend>
+    <input id="studentName">
+    <input type="radio" name="subject" value="maths">Maths
+    <input type="radio" name="subject" value="science">Science
+    <input type="radio" name="subject" value="english">English
+    <p id="subjectDisplay"></p>
+  </fieldset>
+  <fieldset>
+    <legend>Topics</legend>
+    <input type="checkbox" class="topic-checkbox">1
+    <input type="checkbox" class="topic-checkbox">2
+    <input type="checkbox" class="topic-checkbox">3
+  </fieldset>
+  <fieldset>
+    <legend>Quiz</legend>
+    Q1 <input type="radio" name="q1" value="a">a <input type="radio" name="q1" value="b">b
+    Q2 <input type="radio" name="q2" value="a">a <input type="radio" name="q2" value="b">b
+    Q3 <input type="radio" name="q3" value="a">a <input type="radio" name="q3" value="c">c
+  </fieldset>
+  <button id="submitQuizBtn">Submit</button>
+  <button id="resetQuizBtn">Reset</button>
+  <p id="quizScore">0</p>
+  <p id="quizGrade">-</p>
+  <p id="quizRemark">-</p>
+  <script src="script.js"></script>
+</body>
+</html>

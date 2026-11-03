@@ -27,6 +27,18 @@ const NODE = process.execPath;
 const TIMEOUT_MS = 120000;
 const IS_WIN = process.platform === 'win32';
 
+// Stop (the IDE's Stop button sends SIGTERM, Ctrl+C sends SIGINT): kill the running test and its
+// Chrome/Jest children, then report what finished. A second signal exits at once.
+let active = null;
+let stopped = false;
+function stop() {
+  if (stopped) process.exit(130);
+  stopped = true;
+  if (active) killTree(active.pid);
+}
+process.on('SIGINT', stop);
+process.on('SIGTERM', stop);
+
 function parseArgs(argv) {
   const out = { appDir: null, test: null, json: false };
   for (let i = 0; i < argv.length; i++) {
@@ -47,8 +59,10 @@ function detectType(appDir, testFile) {
 
 function run(cmd, args, opts) {
   return new Promise((resolve) => {
+    if (stopped) return resolve({ code: null, out: '[runner] stopped\n' });
     // Own process group on Linux/macOS so a timeout kills Chrome/Jest children too.
     const child = spawn(cmd, args, { ...opts, detached: !IS_WIN, windowsHide: true });
+    active = child;
     let out = '';
     child.stdout.on('data', (d) => { out += d; });
     child.stderr.on('data', (d) => { out += d; });
@@ -56,15 +70,24 @@ function run(cmd, args, opts) {
       out += `\n[runner] timed out after ${TIMEOUT_MS / 1000}s, killed\n`;
       killTree(child.pid);
     }, TIMEOUT_MS);
-    child.on('close', (code) => { clearTimeout(timer); resolve({ code, out }); });
+    child.on('close', (code) => {
+      clearTimeout(timer);
+      active = null;
+      if (stopped) out += '\n[runner] stopped\n';
+      resolve({ code, out });
+    });
   });
 }
 
 function killTree(pid) {
-  try {
-    if (IS_WIN) spawn('taskkill', ['/pid', String(pid), '/T', '/F'], { windowsHide: true });
-    else process.kill(-pid, 'SIGKILL');
-  } catch (e) { /* already gone */ }
+  if (IS_WIN) {
+    try { spawn('taskkill', ['/pid', String(pid), '/T', '/F'], { windowsHide: true }); } catch (e) { /* already gone */ }
+    return;
+  }
+  // SIGTERM first: puppeteer closes its Chrome on SIGTERM. Chrome runs in its own process group,
+  // so a plain SIGKILL of the test would leave it running. Whatever is still alive 2s later is killed.
+  try { process.kill(-pid, 'SIGTERM'); } catch (e) { return; }
+  setTimeout(() => { try { process.kill(-pid, 'SIGKILL'); } catch (e) { /* already gone */ } }, 2000).unref();
 }
 
 function copyDir(src, dst) {
@@ -141,7 +164,8 @@ async function runPuppeteer(appDir, testFile) {
   const tests = names.map((name) => ({
     name,
     status: status[name] || 'failed',
-    message: status[name] ? '' : 'did not report a result (test crashed or timed out before this case)',
+    message: status[name] ? '' : stopped ? 'stopped before this case reported a result'
+      : 'did not report a result (test crashed or timed out before this case)',
   }));
   return { type: 'puppeteer', tests, output: res.out };
 }
@@ -151,7 +175,11 @@ async function runReact(appDir, testFile) {
   try {
     copyDir(path.join(appDir, 'reactapp', 'src'), path.join(runDir, 'src'));
     copyDir(path.join(appDir, 'reactapp', 'public'), path.join(runDir, 'public'));
-    fs.writeFileSync(path.join(runDir, 'package.json'), JSON.stringify({ name: 'reactapp', private: true }));
+    // CRA's default testMatch starts with the full folder path, so a folder name with [ ] or other
+    // glob characters finds 0 tests. A pattern without the folder path works wherever the repo is.
+    fs.writeFileSync(path.join(runDir, 'package.json'), JSON.stringify({
+      name: 'reactapp', private: true, jest: { testMatch: ['**/src/tests/App.test.js'] },
+    }));
     const testsDir = path.join(runDir, 'src', 'tests');
     // Only the graded test runs, like the platform's "Run Test Cases".
     fs.rmSync(testsDir, { recursive: true, force: true });
@@ -212,6 +240,7 @@ async function main() {
 
   const result = type === 'react' ? await runReact(args.appDir, testFile) : await runPuppeteer(args.appDir, testFile);
   result.node = process.version;
+  if (stopped) result.stopped = true;
   result.passed = result.tests.filter((t) => t.status === 'passed').length;
   result.failed = result.tests.length - result.passed;
 

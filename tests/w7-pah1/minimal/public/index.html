@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<body>
+  <fieldset>
+    <legend>Items</legend>
+    <input type="checkbox" class="item-checkbox" data-price="100">Pen
+    <input type="checkbox" class="item-checkbox" data-price="200">Book
+    <input type="checkbox" class="item-checkbox" data-price="300">Bag
+    <input type="checkbox" class="item-checkbox" data-price="400">Shoes
+    <input type="checkbox" class="item-checkbox" data-price="500">Watch
+  </fieldset>
+  <fieldset>
+    <legend>Payment</legend>
+    <input type="radio" name="paymentMethod" value="cash">Cash
+    <input type="radio" name="paymentMethod" value="card">Card
+    <input type="radio" name="paymentMethod" value="upi">UPI
+  </fieldset>
+  <button id="calculateBtn">Calculate</button>
+  <button id="resetBillBtn">Reset</button>
+  <p id="paymentDisplay"></p>
+  <p id="totalAmount">0</p>
+  <p id="discountAmount">0</p>
+  <p id="finalAmount">0</p>
+  <script src="script.js"></script>
+</body>
+</html>

@@ -21,6 +21,16 @@ Build a page with three overlapping images and three buttons. Each button brings
 - Missing image files cause console errors and fail case 7, so use images that load or avoid broken sources.
 - Buttons are clicked by id, so the images must not cover them.
 
+## Images
+
+These sample images are already in the project (plain coloured placeholders). Use them with the `src` shown; any other file name gives a broken image.
+
+| File | Use in HTML |
+|---|---|
+| `public/img1.svg` | `src="img1.svg"` |
+| `public/img2.svg` | `src="img2.svg"` |
+| `public/img3.svg` | `src="img3.svg"` |
+
 ## Files
 
 - `public/index.html`

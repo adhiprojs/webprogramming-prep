@@ -1,0 +1,20 @@
+header {
+  background-color: #2c3e50;
+  text-align: center;
+  padding: 20px;
+}
+
+section {
+  background-color: #ecf0f1;
+  padding: 20px;
+  margin: 20px;
+}
+
+li {
+  padding: 10px;
+  margin: 10px;
+}
+
+#speakersList {
+  display: flex;
+}

@@ -1,0 +1,12 @@
+.profile-card {
+  background-color: rgb(255, 255, 255);
+  box-shadow: 0 4px 8px gray;
+}
+
+.profile-card .button {
+  background-color: rgb(76, 174, 79);
+}
+
+.profile-card .button:hover {
+  background-color: rgb(69, 170, 63);
+}

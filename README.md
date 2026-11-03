@@ -20,14 +20,14 @@ It's practice, not an exam: paste works, nothing is locked, you can switch tasks
 
 ### Linux / macOS
 ```sh
-git clone https://github.com/adhithya-code/webprogramming-prep.git
+git clone https://github.com/adhiprojs/webprogramming-prep.git
 cd webprogramming-prep
 ./setup.sh
 ```
 
 ### Windows
 ```bat
-git clone https://github.com/adhithya-code/webprogramming-prep.git
+git clone https://github.com/adhiprojs/webprogramming-prep.git
 cd webprogramming-prep
 setup.cmd
 ```
@@ -65,8 +65,9 @@ Then open **http://localhost:4000** in your browser. To stop the IDE, press Ctrl
 6. **Preview** shows your page. It refreshes on every save, so with Autosave on it updates almost as you type. For React tasks, click *Start live preview*; the first start takes about 30 seconds, then every save hot-reloads it.
 
 Useful buttons:
-- **Load ▾** puts code into the editor: the *passing solution*, the *original code from the dump* or the *blank starter*. Nothing is saved until you press Save. *Delete my saved answer* resets the task.
-- **Compare ▾** shows your code side by side with the solution, the original or the starter.
+- **Load ▾** puts code into the editor: the *passing solution*, the *minimal* version, the *original code from the dump* or the *blank starter*. Nothing is saved until you press Save. *Delete my saved answer* resets the task.
+- **Minimal** is the smallest code that passes the tests and nothing else: no styling, text or features that the test doesn't check. Use it to see exactly what the grader needs. It is not a complete answer to the question (for example, the minimal stopwatch never ticks, because no test checks that).
+- **Compare ▾** shows your code side by side with the solution, the minimal version, the original or the starter.
 - **Check passing solution** (in Test results) runs the stored solution without touching your answer.
 - **Notes**: an exam-focused explanation of the task and the common mistakes. **Report**: the results of the original code and the solution. Both are hidden until you click, so they don't spoil the answer.
 - **Cheatsheet**: the patterns that repeat across all weeks (exact ids/text, computed CSS, radio buttons, grade logic, React props/state, RTL queries, …).
@@ -111,6 +112,7 @@ Point the first path at any folder laid out like the exam workspace (`public/…
 | `w1/` … `w11/` | the original workspace dumps (one text file per task) |
 | `tests/<task>/code/` | each dump split back into its real files, byte-for-byte |
 | `tests/<task>/solution/` | a verified passing version (only `public/` or `reactapp/src/` changed) |
+| `tests/<task>/minimal/` | the smallest code that passes the tests (verified, same layout as `solution/`) |
 | `tests/<task>/results.md` | test results for the original code and the solution |
 | `practice/<task>/` | blank/buggy starter, `QUESTION.md`, `task.json` (+ your local `answer/`) |
 | `notes/<task>.md`, `notes/cheatsheet.md` | study notes |
@@ -127,7 +129,7 @@ Point the first path at any folder laid out like the exam workspace (`public/…
   - All puppeteer tasks share one install, and all React tasks share one install. The React install is the union of the React tasks' `package.json` files.
   - Before each run, the examly URL inside a puppeteer test is pointed at a local server on a free port instead of 8081. Nothing else in the test is changed.
   - The personal workspace URLs in the dumps and test files were replaced with `https://8081-workspace.examly.io`. The runner points that at the local server anyway, so it doesn't affect any result.
-- **Images:** the dumps only contained `.html/.css/.js/.json` files, so task images were missing. Where a test needs them (e.g. w8-pah1's `img1.jpg`–`img3.jpg`), there are plain coloured placeholder images.
+- **Images:** the dumps only contained `.html/.css/.js/.json` files, so the real task images were missing. Every task that uses images (W2, W5, w6-pah1, w8-pah1, w8-cod2) now has labelled placeholder images in its project, and its Question tab has an **Images** section listing the exact file names to put in `src`.
 - **Known test quirks** are listed in each `tests/<task>/results.md`. For example, w3-cod2 uses the same case name twice, and one w5-pah2 check always passes.
 
 ## 9. Troubleshooting

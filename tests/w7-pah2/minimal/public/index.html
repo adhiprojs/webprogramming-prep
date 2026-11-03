@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<body>
+  <fieldset>
+    <legend>Goal</legend>
+    <input type="radio" name="fitnessGoal" value="weightloss">Weight loss
+    <input type="radio" name="fitnessGoal" value="muscle">Muscle
+    <input type="radio" name="fitnessGoal" value="stamina">Stamina
+  </fieldset>
+  <fieldset>
+    <legend>Days</legend>
+    <input type="checkbox" class="day-checkbox">Mon
+    <input type="checkbox" class="day-checkbox">Tue
+    <input type="checkbox" class="day-checkbox">Wed
+    <input type="checkbox" class="day-checkbox">Thu
+    <input type="checkbox" class="day-checkbox">Fri
+    <input type="checkbox" class="day-checkbox">Sat
+    <input type="checkbox" class="day-checkbox">Sun
+  </fieldset>
+  <button id="calcPlanBtn">Calculate</button>
+  <button id="resetPlanBtn">Reset</button>
+  <p id="goalDisplay"></p>
+  <p id="workoutDays">0</p>
+  <p id="restDays">0</p>
+  <p id="caloriesBurned">0</p>
+  <script src="script.js"></script>
+</body>
+</html>

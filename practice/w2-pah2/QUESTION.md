@@ -22,6 +22,18 @@ Build an e-commerce catalog page with a header and intro, sections for product c
 - There are `4` header cells but only `3` cells of the first row are checked; the fourth is the image cell.
 - The border check needs the HTML `border` attribute on the `table`; CSS borders alone do not pass.
 
+## Images
+
+These sample images are already in the project (plain coloured placeholders). Use them with the `src` shown; any other file name gives a broken image.
+
+| File | Use in HTML |
+|---|---|
+| `public/laptop.jpg` | `src="laptop.jpg"` |
+| `public/phone.jpg` | `src="phone.jpg"` |
+| `public/tshirt.jpg` | `src="tshirt.jpg"` |
+| `public/jeans.jpg` | `src="jeans.jpg"` |
+| `public/microwave.jpg` | `src="microwave.jpg"` |
+
 ## Files
 
 - `public/index.html`
