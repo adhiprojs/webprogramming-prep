@@ -45,7 +45,7 @@ All versions are pinned by `package-lock.json`. At the end it runs one HTML task
 7/7 passed (react, node v14.21.3)
 Setup done.
 ```
-If you run setup again, it skips the Node download and reinstalls the packages.
+If either check fails, setup stops and prints the full test output instead of "Setup done". Send that output to whoever is helping you. If you run setup again, it skips the Node download and reinstalls the packages.
 
 ## 3. Start the IDE
 

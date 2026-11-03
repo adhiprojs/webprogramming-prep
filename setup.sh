@@ -41,9 +41,20 @@ for dir in runtime/puppeteer runtime/react ide; do
   (cd "$dir" && npm ci --no-audit --no-fund)
 done
 
+# Runs one stored solution; stops setup with the full output if it doesn't pass.
+check() {
+  out=$(node runtime/run-test.js "$@") && code=0 || code=$?
+  echo "$out" | tail -n 1
+  if [ "$code" -ne 0 ]; then
+    echo "$out"
+    echo
+    echo "Setup check FAILED for $1 (output above). Fix that before using the IDE."
+    exit 1
+  fi
+}
 echo "==> Checking: one puppeteer task and one React task"
-node runtime/run-test.js tests/w7-cy/solution --test tests/w7-cy/code/puppeteer/test.js | tail -n 1
-node runtime/run-test.js tests/w10-cod1/solution --test tests/w10-cod1/code/react/tests/App.test.js | tail -n 1
+check tests/w7-cy/solution --test tests/w7-cy/code/puppeteer/test.js
+check tests/w10-cod1/solution --test tests/w10-cod1/code/react/tests/App.test.js
 
 echo
 echo "Setup done. Start the IDE with:  ./ide.sh   then open http://localhost:4000"

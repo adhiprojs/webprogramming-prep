@@ -34,9 +34,19 @@ foreach ($dir in 'runtime\puppeteer', 'runtime\react', 'ide') {
   if ($code -ne 0) { throw "npm ci failed in $dir (exit code $code)" }
 }
 
+# Runs one stored solution; stops setup with the full output if it doesn't pass.
+function Test-Solution($app, $test) {
+  $out = @(& node.exe runtime\run-test.js $app --test $test)
+  $code = $LASTEXITCODE
+  Write-Host $out[-1]
+  if ($code -ne 0) {
+    $out | ForEach-Object { Write-Host $_ }
+    throw "Setup check FAILED for $app (output above). Fix that before using the IDE."
+  }
+}
 Write-Host "==> Checking: one puppeteer task and one React task"
-& node.exe runtime\run-test.js tests\w7-cy\solution --test tests\w7-cy\code\puppeteer\test.js | Select-Object -Last 1
-& node.exe runtime\run-test.js tests\w10-cod1\solution --test tests\w10-cod1\code\react\tests\App.test.js | Select-Object -Last 1
+Test-Solution 'tests\w7-cy\solution' 'tests\w7-cy\code\puppeteer\test.js'
+Test-Solution 'tests\w10-cod1\solution' 'tests\w10-cod1\code\react\tests\App.test.js'
 
 Write-Host ''
 Write-Host 'Setup done. Start the IDE by double-clicking ide.cmd, then open http://localhost:4000'

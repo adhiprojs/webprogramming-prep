@@ -25,6 +25,9 @@ const PUPPETEER_RT = path.join(RUNTIME, 'puppeteer');
 const REACT_RT = path.join(RUNTIME, 'react');
 const NODE = process.execPath;
 const TIMEOUT_MS = 120000;
+// Jest's first run compiles everything with Babel, which can take minutes on a slow Windows disk
+// with antivirus scanning node_modules.
+const REACT_TIMEOUT_MS = 300000;
 const IS_WIN = process.platform === 'win32';
 
 // Stop (the IDE's Stop button sends SIGTERM, Ctrl+C sends SIGINT): kill the running test and its
@@ -57,7 +60,7 @@ function detectType(appDir, testFile) {
   return 'puppeteer';
 }
 
-function run(cmd, args, opts) {
+function run(cmd, args, opts, timeoutMs = TIMEOUT_MS) {
   return new Promise((resolve) => {
     if (stopped) return resolve({ code: null, out: '[runner] stopped\n' });
     // Own process group on Linux/macOS so a timeout kills Chrome/Jest children too.
@@ -67,9 +70,9 @@ function run(cmd, args, opts) {
     child.stdout.on('data', (d) => { out += d; });
     child.stderr.on('data', (d) => { out += d; });
     const timer = setTimeout(() => {
-      out += `\n[runner] timed out after ${TIMEOUT_MS / 1000}s, killed\n`;
+      out += `\n[runner] timed out after ${timeoutMs / 1000}s, killed\n`;
       killTree(child.pid);
-    }, TIMEOUT_MS);
+    }, timeoutMs);
     child.on('close', (code) => {
       clearTimeout(timer);
       active = null;
@@ -194,7 +197,7 @@ async function runReact(appDir, testFile) {
     const res = await run(NODE, [bin, 'test', '--watchAll=false', '--ci', '--json', `--outputFile=${outFile}`], {
       cwd: runDir,
       env: { ...process.env, CI: 'true', BROWSER: 'none', SKIP_PREFLIGHT_CHECK: 'true' },
-    });
+    }, REACT_TIMEOUT_MS);
 
     let tests = [];
     if (fs.existsSync(outFile)) {
